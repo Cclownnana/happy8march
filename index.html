@@ -252,20 +252,26 @@ body{font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden}
 
 <script>
 var G = {name:'Мамочка', text:'', sig:'— Сына', photos:[]};
-var caught=0, TOTAL=8, timers=[], shortUrl=null;
 var EMOJI=['💝','💖','💗','💓','💕','💞','❤️','🩷'];
 
-// Используем Anthropic Claude API через artifact для хранения — 
-// нет, просто кодируем данные в hash (#) — он не отправляется на сервер и не ограничен GitHub Pages!
-function save(d){ 
-  var str = btoa(unescape(encodeURIComponent(JSON.stringify(d))));
-  window.location.hash = str;
-  return str;
+// Текст в ?d= параметре (мессенджеры не режут), фото только локально
+function save(d){
+  var textOnly = {n:d.n, t:d.t, s:d.s};
+  var str = btoa(unescape(encodeURIComponent(JSON.stringify(textOnly))));
+  var base = window.location.href.split('?')[0].split('#')[0];
+  window.history.replaceState({}, '', base + '?d=' + str);
+  try{ sessionStorage.setItem('card_photos', JSON.stringify(d.p||[])); }catch(e){}
 }
 function load(){
-  var h = window.location.hash.slice(1);
-  if(!h) return null;
-  try{ var d=JSON.parse(decodeURIComponent(escape(atob(h)))); return {name:d.n,text:d.t,sig:d.s,photos:d.p||[]}; }catch(e){return null;}
+  var params = new URLSearchParams(window.location.search);
+  var d64 = params.get('d');
+  if(!d64) return null;
+  try{
+    var d = JSON.parse(decodeURIComponent(escape(atob(d64))));
+    var photos = [];
+    try{ photos = JSON.parse(sessionStorage.getItem('card_photos')||'[]'); }catch(e){}
+    return {name:d.n, text:d.t, sig:d.s, photos:photos};
+  }catch(e){ return null; }
 }
 
 // Photos
@@ -318,7 +324,6 @@ document.getElementById('btn-go').addEventListener('click',function(){
   G.name = document.getElementById('inp-name').value.trim()||'Мамочка';
   G.text = document.getElementById('inp-text').value;
   G.sig  = document.getElementById('inp-sig').value.trim()||'— С любовью';
-  shortUrl=null;
   save({n:G.name,t:G.text,s:G.sig,p:G.photos});
   startGame();
 });
@@ -431,23 +436,13 @@ function petals_(){
   },i*270);})(i);}
 }
 
-// Share — используем hash (#) ссылку + TinyURL
+// Share
 function share_(){
-  var fullUrl=window.location.href.split('#')[0]+'#'+window.location.hash.slice(1);
-  if(shortUrl){modal_(shortUrl);return;}
-  modal_(fullUrl,true);
-  fetch('https://tinyurl.com/api-create.php?url='+encodeURIComponent(fullUrl))
-    .then(function(r){return r.text();})
-    .then(function(s){
-      if(s&&s.startsWith('https://')){
-        shortUrl=s;
-        var inp=document.getElementById('_url');
-        if(inp)inp.value=s;
-      }
-    }).catch(function(){});
+  var fullUrl = window.location.href.split('#')[0]; // уже содержит ?d=...
+  modal_(fullUrl);
 }
 
-function modal_(url,loading){
+function modal_(url){
   var old=document.getElementById('_mo');if(old)old.remove();
   var ov=document.createElement('div');ov.id='_mo';ov.className='mo';
   var box=document.createElement('div');box.className='mc';
@@ -465,11 +460,8 @@ function modal_(url,loading){
 
   var row=document.createElement('div');row.className='url-row';
   var inp=document.createElement('input');inp.type='text';inp.className='url-inp';inp.id='_url';
-  inp.value=loading?'⏳ Сокращаем ссылку...':url;inp.readOnly=true;
-  if(loading)inp.style.color='#bbb';
+  inp.value=url;inp.readOnly=true;
   inp.addEventListener('click',function(){this.select();});
-  // снять серый цвет как только значение обновится
-  var iv=setInterval(function(){var el=document.getElementById('_url');if(el&&el.value!==inp.value){el.style.color='#555';clearInterval(iv);}if(!document.getElementById('_url'))clearInterval(iv);},200);
   var cp=document.createElement('button');cp.className='btn-cp';cp.textContent='Копировать';cp.onclick=doCopy;
   row.appendChild(inp);row.appendChild(cp);
 
@@ -492,10 +484,8 @@ function doCopy(){
 
 function reset(){
   G={name:'Мамочка',text:'',sig:'— Сына',photos:[]};
-  shortUrl=null;renderThumbs();
   go('builder-screen');
   try{window.history.replaceState({},'',window.location.pathname);}catch(e){}
-  window.location.hash='';
 }
 
 function go(id){
@@ -510,13 +500,11 @@ function toast_(msg){
 
 // Init
 window.addEventListener('DOMContentLoaded',function(){
-  var h=window.location.hash.slice(1);
-  if(h){
-    try{
-      var d=JSON.parse(decodeURIComponent(escape(atob(h))));
-      G={name:d.n||'Мамочка',text:d.t||'',sig:d.s||'',photos:d.p||[]};
-      startGame();return;
-    }catch(e){}
+  var data = load();
+  if(data){
+    G = {name:data.name||'Мамочка', text:data.text||'', sig:data.sig||'', photos:data.photos||[]};
+    startGame();
+    return;
   }
   go('builder-screen');
 });
