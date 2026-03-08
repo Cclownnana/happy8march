@@ -6,16 +6,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Поздравление для мамочки 💝</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 :root {
-  --mint-bg: #f0faf0;
-  --rose: #f48fb1;
-  --rose-dark: #e91e8c;
-  --gold: #f9a825;
-  --green-dark: #2e7d32;
-  --text: #3e2723;
-  --card-bg: rgba(255,255,255,0.9);
+  --mint-bg: #f0faf0; --rose-dark: #e91e8c; --gold: #f9a825;
+  --green-dark: #2e7d32; --text: #3e2723; --card-bg: rgba(255,255,255,0.9);
 }
 body { font-family: 'Nunito', sans-serif; background: linear-gradient(160deg,#e8f5e9 0%,#fce4ec 50%,#e8f5e9 100%); min-height: 100vh; overflow-x: hidden; }
 .screen { display: none; min-height: 100vh; }
@@ -41,22 +37,20 @@ body { font-family: 'Nunito', sans-serif; background: linear-gradient(160deg,#e8
 .photo-preview { aspect-ratio: 1; border-radius: 12px; overflow: hidden; position: relative; }
 .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
 .remove-photo { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; cursor: pointer; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+.photo-count { color: rgba(255,255,255,0.4); font-size: 0.75rem; margin-top: 6px; text-align: center; min-height: 18px; }
+/* size indicator */
+.size-wrap { margin-top: 8px; }
+.size-bar-bg { background: rgba(255,255,255,0.08); border-radius: 6px; height: 5px; overflow: hidden; }
+.size-bar { height: 100%; border-radius: 6px; background: linear-gradient(90deg,#a5d6a7,#f9a825); transition: width 0.4s, background 0.4s; width: 0; }
+.size-bar.warn { background: linear-gradient(90deg,#f9a825,#ef5350); }
+.size-label { font-size: 0.72rem; color: rgba(255,255,255,0.3); margin-top: 4px; text-align: right; }
 .btn-create { width: 100%; background: linear-gradient(135deg,#e91e8c,#f9a825); border: none; border-radius: 16px; color: white; font-family: ‘Nunito’,sans-serif; font-size: 1.1rem; font-weight: 700; padding: 17px; cursor: pointer; transition: all 0.3s; margin-top: 6px; }
 .btn-create:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(233,30,140,0.4); }
-.btn-create:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+.btn-create:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 8px; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.error-box { background: rgba(244,67,54,0.15); border: 1px solid rgba(244,67,54,0.3); border-radius: 12px; padding: 12px 16px; margin-top: 12px; color: #ff8a80; font-size: 0.85rem; display: none; }
-.error-box.show { display: block; }
-.photo-count { color: rgba(255,255,255,0.4); font-size: 0.75rem; margin-top: 6px; text-align: center; }
-
-/* LOADING */
-#loading-screen { background: linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%); align-items: center; justify-content: center; }
-.loading-box { text-align: center; color: white; }
-.loading-flowers { font-size: 3.5rem; animation: pulse-flowers 1s ease-in-out infinite alternate; }
-@keyframes pulse-flowers { from{transform:scale(0.9);opacity:0.7;} to{transform:scale(1.1);opacity:1;} }
-.loading-text { font-family: ‘Playfair Display’,serif; font-size: 1.4rem; margin-top: 20px; color: rgba(255,255,255,0.8); }
-.loading-sub { font-size: 0.85rem; color: rgba(255,255,255,0.4); margin-top: 8px; }
+.warn-box { background: rgba(249,168,37,0.15); border: 1px solid rgba(249,168,37,0.3); border-radius: 12px; padding: 11px 14px; margin-top: 10px; color: #ffe082; font-size: 0.82rem; display: none; line-height: 1.5; }
+.warn-box.show { display: block; }
 
 /* GAME */
 #game-screen { background: radial-gradient(ellipse at 30% 20%,#fce4ec 0%,#e8f5e9 40%,#f3e5f5 100%); align-items: center; justify-content: flex-start; padding-top: 60px; position: relative; overflow: hidden; min-height: 100vh; }
@@ -76,7 +70,7 @@ body { font-family: 'Nunito', sans-serif; background: linear-gradient(160deg,#e8
 .flying-hearts-area { position: fixed; inset: 0; pointer-events: none; z-index: 10; }
 .heart-float { position: absolute; font-size: clamp(2.8rem,7vw,4.5rem); cursor: pointer; pointer-events: all; user-select: none; filter: drop-shadow(0 6px 12px rgba(233,30,140,0.35)); opacity: 0; animation: heart-enter 0.65s cubic-bezier(0.34,1.56,0.64,1) forwards, heart-wobble 3s 0.65s ease-in-out infinite alternate; }
 @keyframes heart-enter { 0%{transform:scale(0) rotate(-35deg) translateY(30px);opacity:0;} 100%{transform:scale(1) rotate(0deg) translateY(0);opacity:1;} }
-@keyframes heart-wobble { 0%{transform:translateY(0px) rotate(-6deg) scale(1);} 35%{transform:translateY(-16px) rotate(4deg) scale(1.06);} 70%{transform:translateY(-8px) rotate(-2deg) scale(0.97);} 100%{transform:translateY(-22px) rotate(7deg) scale(1.04);} }
+@keyframes heart-wobble { 0%{transform:translateY(0) rotate(-6deg) scale(1);} 35%{transform:translateY(-16px) rotate(4deg) scale(1.06);} 70%{transform:translateY(-8px) rotate(-2deg) scale(0.97);} 100%{transform:translateY(-22px) rotate(7deg) scale(1.04);} }
 .heart-float:hover { filter: drop-shadow(0 0 18px rgba(233,30,140,0.9)) !important; transform: scale(1.28) !important; transition: transform 0.12s, filter 0.12s; }
 .heart-float.caught { animation: heart-caught 0.5s cubic-bezier(0.6,-0.28,0.74,0.05) forwards !important; pointer-events: none; }
 @keyframes heart-caught { 0%{transform:scale(1);opacity:1;} 30%{transform:scale(2.2) rotate(15deg);opacity:0.9;} 65%{transform:scale(3.8) rotate(-5deg) translateY(-40px);opacity:0.4;} 100%{transform:scale(0.1) translateY(-130px);opacity:0;} }
@@ -139,17 +133,15 @@ body { font-family: 'Nunito', sans-serif; background: linear-gradient(160deg,#e8
 .url-row { display: flex; gap: 8px; align-items: center; background: #f5f5f5; border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; }
 .url-inp { flex: 1; border: none; background: transparent; font-size: 0.78rem; color: #555; outline: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; cursor: text; }
 .btn-cp { background: linear-gradient(135deg,#e91e8c,#f9a825); border: none; border-radius: 8px; color: white; font-weight: 700; font-size: 0.82rem; padding: 8px 14px; cursor: pointer; white-space: nowrap; font-family: ‘Nunito’,sans-serif; flex-shrink: 0; }
-.copy-res { color: #2e7d32; font-size: 0.85rem; font-weight: 600; min-height: 22px; margin-bottom: 12px; }
+.copy-res { color: #2e7d32; font-size: 0.85rem; font-weight: 600; min-height: 22px; margin-bottom: 10px; }
 .btn-native-share { background: linear-gradient(135deg,#2e7d32,#66bb6a); border: none; border-radius: 50px; color: white; font-family: ‘Nunito’,sans-serif; font-size: 0.95rem; font-weight: 700; padding: 12px 28px; cursor: pointer; width: 100%; margin-bottom: 12px; }
-.btn-close-m { background: transparent; border: 2px solid #eee; border-radius: 50px; color: #aaa; font-family: ‘Nunito’,sans-serif; font-size: 0.88rem; padding: 10px 22px; cursor: pointer; transition: all 0.2s; }
+.btn-close-m { background: transparent; border: 2px solid #eee; border-radius: 50px; color: #aaa; font-family: ‘Nunito’,sans-serif; font-size: 0.88rem; padding: 10px 22px; cursor: pointer; }
 .btn-close-m:hover { border-color: #ccc; color: #777; }
 .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(100px); background: var(–green-dark); color: white; padding: 12px 24px; border-radius: 50px; font-weight: 600; font-size: 0.88rem; transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1); z-index: 99999; box-shadow: 0 8px 32px rgba(0,0,0,0.2); white-space: nowrap; }
 .toast.show { transform: translateX(-50%) translateY(0); }
-
 @media(max-width:480px){
 .builder-card{padding:24px 18px;} .builder-title{font-size:1.6rem;}
-.greeting-wrapper{padding:26px 14px 50px;} .header-title{font-size:2.1rem;}
-.greeting-text{font-size:1.2rem;}
+.greeting-wrapper{padding:26px 14px 50px;} .header-title{font-size:2.1rem;} .greeting-text{font-size:1.2rem;}
 }
 </style>
 
@@ -187,20 +179,14 @@ body { font-family: 'Nunito', sans-serif; background: linear-gradient(160deg,#e8
 </div>
 <div id="photo-previews" class="photo-previews"></div>
 <div class="photo-count" id="photo-count"></div>
+<div class="size-wrap" id="size-wrap" style="display:none">
+<div class="size-bar-bg"><div class="size-bar" id="size-bar"></div></div>
+<div class="size-label" id="size-label"></div>
 </div>
-<div id="error-box" class="error-box"></div>
+</div>
+<div class="warn-box" id="warn-box"></div>
 <button class="btn-create" id="btn-create">🎉 Создать сюрприз для мамы</button>
 
-  </div>
-</div>
-
-<!-- LOADING -->
-
-<div id="loading-screen" class="screen">
-  <div class="loading-box">
-    <div class="loading-flowers">🌸🌼🌺</div>
-    <div class="loading-text">Создаём сюрприз...</div>
-    <div class="loading-sub" id="loading-sub">Сохраняем открытку, подожди секунду</div>
   </div>
 </div>
 
@@ -259,189 +245,137 @@ body { font-family: 'Nunito', sans-serif; background: linear-gradient(160deg,#e8
 <div class="toast" id="toast"></div>
 
 <script>
-// ── STATE ──
-var G = { name: 'Мамочка', greeting: '', signature: '— Сына', photos: [] };
-var currentBlobId = null;
-var caught = 0;
-var TOTAL = 8;
-var timers = [];
+var G = { name:'Мамочка', greeting:'', signature:'— Сына', photos:[] };
+var caught = 0, TOTAL = 8, timers = [];
 var EMOJIS = ['💝','💖','💗','💓','💕','💞','❤️','🩷'];
+var MAX_URL_KB = 180; // lz-string compressed budget per photo ~30KB → 6 photos ~180KB safe
 
-// ── PHOTO UPLOAD ──
-// Attach events after DOM ready (avoid inline onclick issues)
+// ── ENCODE / DECODE ── (lz-string, no server needed)
+function encodeData(d) {
+  return LZString.compressToEncodedURIComponent(JSON.stringify({n:d.name,g:d.greeting,s:d.signature,p:d.photos}));
+}
+function decodeData(s) {
+  try {
+    var d = JSON.parse(LZString.decompressFromEncodedURIComponent(s));
+    return { name:d.n||'Мамочка', greeting:d.g||'', signature:d.s||'', photos:d.p||[] };
+  } catch(e) { return null; }
+}
+
+// ── PHOTO RESIZE helper ──
+function resizePhoto(file, cb) {
+  var reader = new FileReader();
+  reader.onload = function(ev) {
+    var img = new Image();
+    img.onload = function() {
+      // Target: max 400px side, quality 0.55 → ~25-40KB per photo
+      var MAX = 400, w = img.width, h = img.height;
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+        else       { w = Math.round(w * MAX / h); h = MAX; }
+      }
+      var c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(c.toDataURL('image/jpeg', 0.55));
+    };
+    img.onerror = function() { cb(null); };
+    img.src = ev.target.result;
+  };
+  reader.onerror = function() { cb(null); };
+  reader.readAsDataURL(file);
+}
+
+// ── UPLOAD ──
 document.getElementById('upload-area').addEventListener('click', function() {
   if (G.photos.length >= 6) return;
   document.getElementById('photo-input').click();
 });
 
 document.getElementById('photo-input').addEventListener('change', function(e) {
-  var files = Array.from(e.target.files);
+  var files = Array.from(e.target.files).slice(0, 6 - G.photos.length);
+  e.target.value = '';
   if (!files.length) return;
-  var canAdd = 6 - G.photos.length;
-  files = files.slice(0, canAdd);
-  if (!files.length) { showToast('Максимум 6 фото!'); return; }
-
-  var pending = files.length;
-
-  files.forEach(function(file) {
-    var reader = new FileReader();
-    reader.onload = function(ev) {
-      var dataUrl = ev.target.result;
-      // Resize via canvas
-      var img = new Image();
-      img.onload = function() {
-        var MAX = 800;
-        var w = img.width, h = img.height;
-        if (w > MAX || h > MAX) {
-          if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
-          else { w = Math.round(w * MAX / h); h = MAX; }
-        }
-        var canvas = document.createElement('canvas');
-        canvas.width = w;
-        canvas.height = h;
-        var ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, w, h);
-        var compressed = canvas.toDataURL('image/jpeg', 0.7);
-        G.photos.push(compressed);
-        pending--;
-        if (pending === 0) {
-          renderPrev();
-          // Reset input so same files can be re-selected
-          document.getElementById('photo-input').value = '';
-        }
-      };
-      img.onerror = function() {
-        pending--;
-        if (pending === 0) { renderPrev(); document.getElementById('photo-input').value = ''; }
-      };
-      img.src = dataUrl;
-    };
-    reader.onerror = function() {
-      pending--;
-      if (pending === 0) { renderPrev(); document.getElementById('photo-input').value = ''; }
-    };
-    reader.readAsDataURL(file);
+  var done = 0;
+  files.forEach(function(f) {
+    resizePhoto(f, function(dataUrl) {
+      if (dataUrl) G.photos.push(dataUrl);
+      done++;
+      if (done === files.length) renderPrev();
+    });
   });
 });
 
 function renderPrev() {
   var container = document.getElementById('photo-previews');
-  var countEl = document.getElementById('photo-count');
-  var uploadText = document.getElementById('upload-text');
-  var area = document.getElementById('upload-area');
-
-  container.innerHTML = G.photos.map(function(s, i) {
-    return '<div class="photo-preview">'
-      + '<img src="' + s + '">'
-      + '<button class="remove-photo" data-idx="' + i + '">✕</button>'
-      + '</div>';
+  container.innerHTML = G.photos.map(function(s,i) {
+    return '<div class="photo-preview"><img src="' + s + '"><button class="remove-photo" data-i="' + i + '">✕</button></div>';
   }).join('');
-
-  // Attach remove handlers
   container.querySelectorAll('.remove-photo').forEach(function(btn) {
     btn.addEventListener('click', function(e) {
       e.stopPropagation();
-      var idx = parseInt(this.getAttribute('data-idx'));
-      removePhoto(idx);
+      G.photos.splice(+this.getAttribute('data-i'), 1);
+      renderPrev();
     });
   });
-
-  countEl.textContent = G.photos.length > 0 ? ('Добавлено: ' + G.photos.length + ' / 6') : '';
-  uploadText.textContent = G.photos.length >= 6 ? 'Максимум достигнут' : 'Нажми чтобы добавить фото';
-  area.style.opacity = G.photos.length >= 6 ? '0.5' : '1';
-  area.style.cursor = G.photos.length >= 6 ? 'default' : 'pointer';
+  document.getElementById('photo-count').textContent = G.photos.length ? 'Добавлено: ' + G.photos.length + ' / 6' : '';
+  document.getElementById('upload-text').textContent = G.photos.length >= 6 ? 'Максимум достигнут' : 'Нажми чтобы добавить фото';
+  document.getElementById('upload-area').style.opacity = G.photos.length >= 6 ? '0.5' : '1';
+  updateSizeBar();
 }
 
-function removePhoto(i) {
-  G.photos.splice(i, 1);
-  renderPrev();
-}
-
-// ── JSONBLOB ──
-var BLOB_API = 'https://jsonblob.com/api/jsonBlob';
-
-function saveToBlob(data, onSuccess, onError) {
-  fetch(BLOB_API, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-    body: JSON.stringify(data)
-  }).then(function(res) {
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    var loc = res.headers.get('Location') || '';
-    var id = loc.split('/').pop();
-    if (!id) throw new Error('No ID in Location header');
-    onSuccess(id);
-  }).catch(function(err) {
-    onError(err);
-  });
-}
-
-function loadFromBlob(id, onSuccess, onError) {
-  fetch(BLOB_API + '/' + id, {
-    headers: { 'Accept': 'application/json' }
-  }).then(function(res) {
-    if (!res.ok) throw new Error('HTTP ' + res.status);
-    return res.json();
-  }).then(function(data) {
-    onSuccess(data);
-  }).catch(function(err) {
-    onError(err);
-  });
+function updateSizeBar() {
+  if (!G.photos.length) { document.getElementById('size-wrap').style.display='none'; return; }
+  // Estimate compressed URL size
+  var raw = JSON.stringify({n:G.name||'',g:'',s:'',p:G.photos});
+  var compressed = LZString.compressToEncodedURIComponent(raw);
+  var kb = Math.round(compressed.length / 1024);
+  var MAX_KB = 1800; // browsers handle ~2000KB URLs safely
+  var pct = Math.min(100, Math.round(kb / MAX_KB * 100));
+  document.getElementById('size-wrap').style.display = 'block';
+  var bar = document.getElementById('size-bar');
+  bar.style.width = pct + '%';
+  bar.className = 'size-bar' + (pct > 75 ? ' warn' : '');
+  document.getElementById('size-label').textContent = 'Размер ссылки: ~' + kb + ' KB из ' + MAX_KB + ' KB';
 }
 
 // ── CREATE ──
-document.getElementById('btn-create').addEventListener('click', createGreeting);
-
-function createGreeting() {
+document.getElementById('btn-create').addEventListener('click', function() {
   G.name      = document.getElementById('input-name').value.trim() || 'Мамочка';
   G.greeting  = document.getElementById('input-greeting').value;
   G.signature = document.getElementById('input-signature').value.trim() || '— С любовью';
 
-  var btn = document.getElementById('btn-create');
-  var errBox = document.getElementById('error-box');
-  errBox.style.display = 'none';
+  var warn = document.getElementById('warn-box');
+  warn.className = 'warn-box';
 
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Сохраняем...';
-  showScreen('loading-screen');
+  // Check URL size
+  var encoded = encodeData(G);
+  var kb = Math.round(encoded.length / 1024);
+  if (kb > 1800) {
+    warn.textContent = '⚠️ Слишком много фото — ссылка получится слишком длинной. Удали 1-2 фото.';
+    warn.className = 'warn-box show';
+    return;
+  }
 
-  saveToBlob(
-    { n: G.name, g: G.greeting, s: G.signature, p: G.photos },
-    function(id) {
-      currentBlobId = id;
-      try {
-        var u = new URL(window.location.href);
-        u.searchParams.set('id', id);
-        u.searchParams.delete('g');
-        window.history.replaceState({}, '', u.toString());
-      } catch(e) {}
-      startGame();
-    },
-    function(err) {
-      console.error('saveToBlob error:', err);
-      showScreen('builder-screen');
-      errBox.style.display = 'block';
-      errBox.textContent = '⚠️ Не удалось сохранить. Проверь интернет и попробуй снова.';
-      btn.disabled = false;
-      btn.innerHTML = '🎉 Создать сюрприз для мамы';
-    }
-  );
-}
+  try {
+    var u = new URL(window.location.href);
+    u.searchParams.set('d', encoded);
+    window.history.replaceState({}, '', u.toString());
+  } catch(e) {}
+
+  startGame();
+});
 
 // ── GAME ──
 function startGame() {
   showScreen('game-screen');
-  caught = 0;
-  timers.forEach(clearTimeout); timers = [];
+  caught = 0; timers.forEach(clearTimeout); timers = [];
   document.getElementById('game-for').textContent = 'для ' + G.name;
   document.getElementById('hearts-counter').textContent = '0 / ' + TOTAL;
   document.getElementById('hearts-dots').innerHTML =
     Array(TOTAL).fill(0).map(function(_,i){ return '<span class="heart-dot" id="dot-'+i+'">💝</span>'; }).join('');
-
-  var bg = document.getElementById('bg-petals');
-  bg.innerHTML = '';
+  var bg = document.getElementById('bg-petals'); bg.innerHTML = '';
   ['🌸','🌺','🌼','🌷','✿','❋'].forEach(function(p) {
-    for(var j=0;j<2;j++){
+    for (var j=0;j<2;j++) {
       var el=document.createElement('div'); el.className='bg-petal'; el.textContent=p;
       el.style.cssText='left:'+Math.random()*100+'%;font-size:'+(1.2+Math.random()*2.5)+'rem;animation-duration:'+(10+Math.random()*12)+'s;animation-delay:'+Math.random()*16+'s';
       bg.appendChild(el);
@@ -452,41 +386,36 @@ function startGame() {
 
 function spawnAll() {
   document.getElementById('flying-hearts').innerHTML = '';
-  for(var i=0;i<TOTAL;i++){
-    (function(idx){
-      var t = setTimeout(function(){ spawnHeart(idx); }, idx*480 + Math.random()*250);
-      timers.push(t);
+  for (var i=0;i<TOTAL;i++) {
+    (function(idx) {
+      timers.push(setTimeout(function(){ spawnHeart(idx); }, idx*480+Math.random()*250));
     })(i);
   }
 }
 
 function spawnHeart(idx) {
-  if(caught >= TOTAL) return;
+  if (caught >= TOTAL) return;
   var area = document.getElementById('flying-hearts');
-  var el = document.createElement('div');
-  el.className = 'heart-float';
-  el.textContent = EMOJIS[idx];
+  var el = document.createElement('div'); el.className='heart-float'; el.textContent=EMOJIS[idx];
   var pad=80, x=pad+Math.random()*(window.innerWidth-pad*2), y=120+Math.random()*(window.innerHeight-300);
   el.style.left=x+'px'; el.style.top=y+'px';
-  el.style.animationDelay='0s, '+(0.65+Math.random()*0.4)+'s';
-  el.style.animationDuration='0.65s, '+(2.3+Math.random()*2)+'s';
-  var fn = function(ev) { ev.preventDefault(); catchHeart(el, x+35, y+35); };
-  el.addEventListener('click', fn);
-  el.addEventListener('touchstart', fn, {passive:false});
+  el.style.animationDelay='0s,'+(0.65+Math.random()*0.4)+'s';
+  el.style.animationDuration='0.65s,'+(2.3+Math.random()*2)+'s';
+  var fn=function(ev){ ev.preventDefault(); catchHeart(el,x+35,y+35); };
+  el.addEventListener('click',fn); el.addEventListener('touchstart',fn,{passive:false});
   area.appendChild(el);
 }
 
 function catchHeart(el,cx,cy) {
-  if(el.classList.contains('caught')) return;
+  if (el.classList.contains('caught')) return;
   el.classList.add('caught'); caught++;
   var fl=document.createElement('div'); fl.className='catch-flash'; document.body.appendChild(fl);
   setTimeout(function(){fl.remove();},500);
   var dot=document.getElementById('dot-'+(caught-1)); if(dot) dot.classList.add('caught');
   var ctr=document.getElementById('hearts-counter');
-  ctr.textContent=caught+' / '+TOTAL;
-  ctr.classList.remove('pulse'); void ctr.offsetWidth; ctr.classList.add('pulse');
+  ctr.textContent=caught+' / '+TOTAL; ctr.classList.remove('pulse'); void ctr.offsetWidth; ctr.classList.add('pulse');
   var emoji=el.textContent;
-  for(var i=0;i<9;i++){
+  for (var i=0;i<9;i++) {
     (function(i){
       var b=document.createElement('div'); b.className='heart-burst';
       var a=(i/9)*Math.PI*2, d=65+Math.random()*65;
@@ -495,17 +424,17 @@ function catchHeart(el,cx,cy) {
     })(i);
   }
   var tc=['#f48fb1','#f9a825','#a5d6a7','#81d4fa','#ce93d8'];
-  for(var j=0;j<7;j++){
+  for (var j=0;j<7;j++) {
     (function(j){
       setTimeout(function(){
         var d=document.createElement('div'); d.className='trail-dot';
         d.style.cssText='left:'+(cx+(Math.random()-.5)*55)+'px;top:'+(cy+(Math.random()-.5)*55)+'px;background:'+tc[j%tc.length]+';width:'+(5+Math.random()*9)+'px;height:'+(5+Math.random()*9)+'px';
         document.body.appendChild(d); setTimeout(function(){d.remove();},650);
-      }, j*45);
+      },j*45);
     })(j);
   }
   setTimeout(function(){el.remove();},550);
-  if(caught>=TOTAL) setTimeout(triggerReveal,750);
+  if (caught>=TOTAL) setTimeout(triggerReveal,750);
 }
 
 function triggerReveal() {
@@ -513,7 +442,7 @@ function triggerReveal() {
   document.getElementById('reveal-text').textContent='С праздником, '+G.name+'! 💝';
   ov.classList.add('active');
   var petals=['🌸','🌺','🌼','🌷','💐','🌻','✿'];
-  for(var i=0;i<24;i++){
+  for (var i=0;i<24;i++) {
     (function(i){
       setTimeout(function(){
         var p=document.createElement('div'); p.className='reveal-petal';
@@ -521,16 +450,16 @@ function triggerReveal() {
         p.style.cssText='left:50vw;top:44vh;--px:'+Math.cos(a)*d+'px;--py:'+Math.sin(a)*d+'px;--pr:'+(Math.random()*720)+'deg;animation-duration:'+(0.9+Math.random()*0.6)+'s;animation-delay:'+(i*0.035)+'s;font-size:'+(1.3+Math.random()*1.2)+'rem';
         p.textContent=petals[Math.floor(Math.random()*petals.length)];
         ov.appendChild(p); setTimeout(function(){p.remove();},2200);
-      }, i*35);
+      },i*35);
     })(i);
   }
   launchConfetti();
-  setTimeout(function(){ ov.classList.remove('active'); showGreeting(); }, 2600);
+  setTimeout(function(){ ov.classList.remove('active'); showGreeting(); },2600);
 }
 
 function launchConfetti() {
   var colors=['#f48fb1','#f9a825','#a5d6a7','#81d4fa','#ce93d8','#ff8a65','#fff176'];
-  for(var i=0;i<110;i++){
+  for (var i=0;i<110;i++) {
     (function(){
       var c=document.createElement('div'); c.className='confetti-particle';
       var dur=2.2+Math.random()*3;
@@ -546,19 +475,17 @@ function showGreeting() {
   document.getElementById('greeting-text').textContent=G.greeting;
   document.getElementById('greeting-signature').textContent=G.signature;
   var grid=document.getElementById('photos-grid'), sec=document.getElementById('photos-section');
-  if(G.photos && G.photos.length){
+  if (G.photos&&G.photos.length) {
     grid.innerHTML=G.photos.map(function(s){ return '<div class="photo-item"><img src="'+s+'"></div>'; }).join('');
     sec.style.display='';
-  } else {
-    sec.style.display='none';
-  }
-  document.getElementById('btn-share-final').onclick = shareGreeting;
+  } else { sec.style.display='none'; }
+  document.getElementById('btn-share-final').onclick=shareGreeting;
   spawnPetals();
 }
 
 function spawnPetals() {
   var p=['🌸','🌺','🌼','🌷','🌸','✿'];
-  for(var i=0;i<26;i++){
+  for (var i=0;i<26;i++) {
     (function(i){
       setTimeout(function(){
         var el=document.createElement('div'); el.className='petal-fall';
@@ -566,128 +493,87 @@ function spawnPetals() {
         el.style.cssText='left:'+Math.random()*100+'vw;font-size:'+(0.8+Math.random()*1.3)+'rem;animation-duration:'+dur+'s';
         el.textContent=p[Math.floor(Math.random()*p.length)];
         document.body.appendChild(el); setTimeout(function(){el.remove();},dur*1000+500);
-      }, i*270);
+      },i*270);
     })(i);
   }
 }
 
 // ── SHARE ──
 function shareGreeting() {
-  var id = currentBlobId || new URLSearchParams(window.location.search).get('id');
-  if(!id){ showToast('Сначала создай открытку!'); return; }
+  var encoded = encodeData(G);
   var base = window.location.href.split('?')[0];
-  var shareUrl = base + '?id=' + id;
+  var shareUrl = base + '?d=' + encoded;
+  try { window.history.replaceState({},'',shareUrl); } catch(e){}
   showShareModal(shareUrl);
 }
 
 function showShareModal(shareUrl) {
   var old=document.getElementById('_smo'); if(old) old.remove();
+  var overlay=document.createElement('div'); overlay.id='_smo'; overlay.className='smo';
+  var box=document.createElement('div'); box.className='smc';
 
-  var overlay = document.createElement('div'); overlay.id='_smo'; overlay.className='smo';
+  var icon=document.createElement('div'); icon.className='smc-icon'; icon.textContent='🌸';
+  var title=document.createElement('div'); title.className='smc-title'; title.textContent='Отправь маме!';
+  var sub=document.createElement('div'); sub.className='smc-sub'; sub.textContent='Мама откроет ссылку и сразу увидит игру с сердечками 💝';
+  box.appendChild(icon); box.appendChild(title); box.appendChild(sub);
 
-  var box = document.createElement('div'); box.className='smc';
-
-  var icon = document.createElement('div'); icon.className='smc-icon'; icon.textContent='🌸';
-  var title = document.createElement('div'); title.className='smc-title'; title.textContent='Отправь маме!';
-  var sub = document.createElement('div'); sub.className='smc-sub'; sub.textContent='Мама откроет ссылку и сразу увидит игру с сердечками 💝';
-
-  // Native share
-  if(navigator.share){
-    var nativeBtn = document.createElement('button'); nativeBtn.className='btn-native-share';
-    nativeBtn.textContent='📱 Поделиться через телефон';
-    nativeBtn.onclick = function(){
-      navigator.share({ title: 'Поздравление 💝', url: shareUrl }).catch(function(){});
-    };
-    box.appendChild(icon); box.appendChild(title); box.appendChild(sub); box.appendChild(nativeBtn);
-  } else {
-    box.appendChild(icon); box.appendChild(title); box.appendChild(sub);
+  if (navigator.share) {
+    var nb=document.createElement('button'); nb.className='btn-native-share'; nb.textContent='📱 Поделиться через телефон';
+    nb.onclick=function(){ navigator.share({title:'Поздравление 💝',url:shareUrl}).catch(function(){}); };
+    box.appendChild(nb);
   }
 
-  var urlRow = document.createElement('div'); urlRow.className='url-row';
-  var inp = document.createElement('input'); inp.type='text'; inp.className='url-inp'; inp.id='_sui';
-  inp.value=shareUrl; inp.readOnly=true;
-  inp.addEventListener('click', function(){ this.select(); });
-  var cpBtn = document.createElement('button'); cpBtn.className='btn-cp'; cpBtn.textContent='Копировать';
-  cpBtn.onclick = doCopy;
+  var urlRow=document.createElement('div'); urlRow.className='url-row';
+  var inp=document.createElement('input'); inp.type='text'; inp.className='url-inp'; inp.id='_sui'; inp.value=shareUrl; inp.readOnly=true;
+  inp.addEventListener('click',function(){this.select();});
+  var cpBtn=document.createElement('button'); cpBtn.className='btn-cp'; cpBtn.textContent='Копировать';
+  cpBtn.onclick=doCopy;
   urlRow.appendChild(inp); urlRow.appendChild(cpBtn);
 
-  var copyRes = document.createElement('div'); copyRes.className='copy-res'; copyRes.id='_cr';
-
-  var closeBtn = document.createElement('button'); closeBtn.className='btn-close-m'; closeBtn.textContent='Закрыть';
-  closeBtn.onclick = function(){ overlay.remove(); };
+  var copyRes=document.createElement('div'); copyRes.className='copy-res'; copyRes.id='_cr';
+  var closeBtn=document.createElement('button'); closeBtn.className='btn-close-m'; closeBtn.textContent='Закрыть';
+  closeBtn.onclick=function(){overlay.remove();};
 
   box.appendChild(urlRow); box.appendChild(copyRes); box.appendChild(closeBtn);
-  overlay.appendChild(box);
-  document.body.appendChild(overlay);
-  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+  overlay.appendChild(box); document.body.appendChild(overlay);
+  overlay.addEventListener('click',function(e){if(e.target===overlay)overlay.remove();});
 }
 
 function doCopy() {
   var inp=document.getElementById('_sui'), res=document.getElementById('_cr');
   if(!inp) return;
-  inp.select(); inp.setSelectionRange(0, 99999);
-  var ok = function(){ if(res) res.textContent='✅ Ссылка скопирована!'; };
-  var fail = function(){
-    try{ document.execCommand('copy'); ok(); }
-    catch(e){ if(res) res.textContent='☝️ Скопируй текст вручную'; }
-  };
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(inp.value).then(ok).catch(fail);
-  } else { fail(); }
+  inp.select(); inp.setSelectionRange(0,99999);
+  var ok=function(){if(res)res.textContent='✅ Ссылка скопирована!';};
+  var fail=function(){try{document.execCommand('copy');ok();}catch(e){if(res)res.textContent='☝️ Скопируй текст вручную';}};
+  if(navigator.clipboard) navigator.clipboard.writeText(inp.value).then(ok).catch(fail);
+  else fail();
 }
 
-// ── UTILS ──
 function createNew() {
-  G = { name:'Мамочка', greeting:'', signature:'— Сына', photos:[] };
-  currentBlobId = null;
+  G={name:'Мамочка',greeting:'',signature:'— Сына',photos:[]};
   renderPrev();
-  document.getElementById('error-box').style.display = 'none';
-  var btn = document.getElementById('btn-create');
-  btn.disabled = false; btn.innerHTML = '🎉 Создать сюрприз для мамы';
+  document.getElementById('warn-box').className='warn-box';
   showScreen('builder-screen');
-  try { window.history.replaceState({},'',''); } catch(e){}
+  try{window.history.replaceState({},'','');}catch(e){}
 }
-
 function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
+  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+  document.getElementById(id).classList.add('active'); window.scrollTo(0,0);
 }
-
 function showToast(msg) {
   var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+  setTimeout(function(){t.classList.remove('show');},3000);
 }
 
 // ── INIT ──
 window.addEventListener('DOMContentLoaded', function() {
   var params = new URLSearchParams(window.location.search);
-  var blobId = params.get('id');
-  var legacyG = params.get('g');
-
-  if(blobId){
-    showScreen('loading-screen');
-    loadFromBlob(blobId,
-      function(data){
-        G = { name: data.n||'Мамочка', greeting: data.g||'', signature: data.s||'', photos: data.p||[] };
-        currentBlobId = blobId;
-        startGame();
-      },
-      function(err){
-        console.error('loadFromBlob error:', err);
-        showToast('Не удалось загрузить открытку 😢');
-        showScreen('builder-screen');
-      }
-    );
-  } else if(legacyG){
-    try {
-      var d = JSON.parse(decodeURIComponent(escape(atob(legacyG))));
-      G = { name: d.n||'Мамочка', greeting: d.g||'', signature: d.s||'', photos: d.p||[] };
-      startGame();
-    } catch(e){ showScreen('builder-screen'); }
-  } else {
-    showScreen('builder-screen');
+  var d = params.get('d');
+  if (d) {
+    var data = decodeData(d);
+    if (data) { G = data; startGame(); return; }
   }
+  showScreen('builder-screen');
 });
 </script>
 
