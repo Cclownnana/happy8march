@@ -257,7 +257,8 @@ var EMOJI=['💝','💖','💗','💓','💕','💞','❤️','🩷'];
 // Текст в ?d= параметре (мессенджеры не режут), фото только локально
 function save(d){
   var textOnly = {n:d.n, t:d.t, s:d.s};
-  var str = btoa(unescape(encodeURIComponent(JSON.stringify(textOnly))));
+  // Кириллица-безопасное кодирование
+  var str = encodeURIComponent(JSON.stringify(textOnly));
   var base = window.location.href.split('?')[0].split('#')[0];
   window.history.replaceState({}, '', base + '?d=' + str);
   try{ sessionStorage.setItem('card_photos', JSON.stringify(d.p||[])); }catch(e){}
@@ -267,7 +268,7 @@ function load(){
   var d64 = params.get('d');
   if(!d64) return null;
   try{
-    var d = JSON.parse(decodeURIComponent(escape(atob(d64))));
+    var d = JSON.parse(decodeURIComponent(d64));
     var photos = [];
     try{ photos = JSON.parse(sessionStorage.getItem('card_photos')||'[]'); }catch(e){}
     return {name:d.n, text:d.t, sig:d.s, photos:photos};
@@ -438,7 +439,12 @@ function petals_(){
 
 // Share
 function share_(){
-  var fullUrl = window.location.href.split('#')[0]; // уже содержит ?d=...
+  // href уже содержит ?d=... (установлен при save())
+  var fullUrl = window.location.href.split('#')[0];
+  if(fullUrl.indexOf('?d=') === -1){
+    toast_('Сначала создай открытку!');
+    return;
+  }
   modal_(fullUrl);
 }
 
