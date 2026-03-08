@@ -3,523 +3,623 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Поздравление 💝</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700&family=Cormorant+Garamond:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Поздравление для мамы 💝</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Nunito:wght@400;600;700&family=Cormorant+Garamond:ital,wght@1,400&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--rose:#e91e8c;--gold:#f9a825;--green:#2e7d32;--text:#3e2723;--bg:#f0faf0}
-body{font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden}
-.screen{display:none;min-height:100vh}
-.screen.active{display:flex;flex-direction:column}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Nunito', sans-serif; min-height: 100vh; overflow-x: hidden; }
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
 
-/* ── BUILDER ── */
-#builder-screen{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);align-items:center;justify-content:center;padding:24px}
-.card{background:rgba(255,255,255,0.06);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.12);border-radius:28px;padding:36px;max-width:520px;width:100%;color:#fff}
-.card-title{font-family:‘Playfair Display’,serif;font-size:1.9rem;text-align:center;margin-bottom:6px;background:linear-gradient(135deg,#f48fb1,#f9a825);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.card-sub{text-align:center;color:rgba(255,255,255,0.45);font-size:.83rem;margin-bottom:26px}
-.field{margin-bottom:16px}
-.label{display:block;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,0.6);margin-bottom:6px}
-.inp,.ta{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:13px;color:#fff;font-family:‘Nunito’,sans-serif;font-size:.98rem;padding:12px 16px;outline:none;transition:border-color .2s,background .2s;resize:none}
-.inp::placeholder,.ta::placeholder{color:rgba(255,255,255,.28)}
-.inp:focus,.ta:focus{border-color:#f48fb1;background:rgba(255,255,255,.12)}
-.ta{height:120px;line-height:1.6}
+/* КОНСТРУКТОР */
+#builder-screen { background: linear-gradient(135deg,#1a1a2e,#16213e,#0f3460); align-items: center; justify-content: center; padding: 24px; }
+.card { background: rgba(255,255,255,.06); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,.12); border-radius: 28px; padding: 36px; max-width: 520px; width: 100%; color: #fff; }
+.card-title { font-family: ‘Playfair Display’,serif; font-size: 1.9rem; text-align: center; margin-bottom: 6px; background: linear-gradient(135deg,#f48fb1,#f9a825); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.card-sub { text-align: center; color: rgba(255,255,255,.45); font-size: .83rem; margin-bottom: 26px; }
+.field { margin-bottom: 16px; }
+.label { display: block; font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: rgba(255,255,255,.6); margin-bottom: 6px; }
+.inp, .ta { width: 100%; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14); border-radius: 13px; color: #fff; font-family: ‘Nunito’,sans-serif; font-size: .98rem; padding: 12px 16px; outline: none; resize: none; transition: border-color .2s; }
+.inp::placeholder, .ta::placeholder { color: rgba(255,255,255,.28); }
+.inp:focus, .ta:focus { border-color: #f48fb1; background: rgba(255,255,255,.12); }
+.ta { height: 120px; line-height: 1.6; }
+.photo-zone { border: 2px dashed rgba(255,255,255,.2); border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; transition: all .2s; margin-bottom: 10px; }
+.photo-zone:hover { border-color: #f48fb1; }
+.pz-icon { font-size: 2rem; margin-bottom: 6px; }
+.pz-text { color: rgba(255,255,255,.55); font-size: .88rem; }
+.pz-hint { color: rgba(255,255,255,.28); font-size: .72rem; margin-top: 3px; }
+.thumbs { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 8px; }
+.thumb { aspect-ratio: 1; border-radius: 10px; overflow: hidden; position: relative; }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.thumb-del { position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,.65); color: #fff; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.pcount { color: rgba(255,255,255,.35); font-size: .72rem; text-align: right; min-height: 16px; }
+.btn-main { width: 100%; background: linear-gradient(135deg,#e91e8c,#f9a825); border: none; border-radius: 14px; color: #fff; font-family: ‘Nunito’,sans-serif; font-size: 1.05rem; font-weight: 700; padding: 16px; cursor: pointer; margin-top: 8px; transition: all .25s; }
+.btn-main:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(233,30,140,.4); }
 
-/* photo upload */
-.photo-zone{border:2px dashed rgba(255,255,255,.2);border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px}
-.photo-zone:hover{border-color:#f48fb1;background:rgba(244,143,177,.05)}
-.photo-zone-icon{font-size:2rem;margin-bottom:6px}
-.photo-zone-text{color:rgba(255,255,255,.55);font-size:.88rem}
-.photo-zone-hint{color:rgba(255,255,255,.28);font-size:.72rem;margin-top:3px}
-.thumbs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
-.thumb{aspect-ratio:1;border-radius:10px;overflow:hidden;position:relative}
-.thumb img{width:100%;height:100%;object-fit:cover}
-.thumb-del{position:absolute;top:3px;right:3px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:50%;width:20px;height:20px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.photo-count{color:rgba(255,255,255,.35);font-size:.72rem;text-align:right;min-height:16px}
+/* ИГРА */
+#game-screen { background: radial-gradient(ellipse at 30% 20%, #fce4ec, #e8f5e9 40%, #f3e5f5); align-items: center; justify-content: flex-start; padding-top: 50px; position: relative; }
+.bg-petals { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+.bg-petal { position: absolute; opacity: .1; animation: drift linear infinite; }
+@keyframes drift { 0%{transform:translateY(-60px) rotate(0);opacity:0} 5%{opacity:.1} 95%{opacity:.05} 100%{transform:translateY(110vh) rotate(540deg) translateX(40px);opacity:0} }
+.game-inner { position: relative; z-index: 2; text-align: center; width: 100%; padding: 0 20px; }
+.for-name { font-family: ‘Cormorant Garamond’,serif; font-size: 1.15rem; color: #2e7d32; margin-bottom: 5px; font-style: italic; opacity: .8; }
+.game-h { font-family: ‘Playfair Display’,serif; font-size: 2.1rem; color: #3e2723; margin-bottom: 18px; line-height: 1.2; }
+.dots { display: flex; gap: 7px; justify-content: center; margin-bottom: 16px; }
+.dot { font-size: 1.15rem; filter: grayscale(1); opacity: .22; transition: all .3s; }
+.dot.lit { filter: none; opacity: 1; animation: dpop .5s cubic-bezier(.34,1.56,.64,1); }
+@keyframes dpop { 0%{transform:scale(0) rotate(-20deg)} 60%{transform:scale(1.5) rotate(5deg)} 100%{transform:scale(1) rotate(0)} }
+.counter { display: inline-block; background: #2e7d32; color: #fff; border-radius: 40px; padding: 10px 32px; font-size: 1.35rem; font-weight: 700; box-shadow: 0 4px 20px rgba(46,125,50,.3); }
+.counter.pop { animation: cpop .35s ease; }
+@keyframes cpop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
 
-.btn-main{width:100%;background:linear-gradient(135deg,var(–rose),var(–gold));border:none;border-radius:14px;color:#fff;font-family:‘Nunito’,sans-serif;font-size:1.05rem;font-weight:700;padding:16px;cursor:pointer;margin-top:8px;transition:all .25s}
-.btn-main:hover{transform:translateY(-2px);box-shadow:0 10px 36px rgba(233,30,140,.4)}
-.btn-main:disabled{opacity:.6;cursor:not-allowed;transform:none}
-.spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;vertical-align:middle;margin-right:7px}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* СЕРДЕЧКИ — отдельный слой */
+#hearts-layer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 999; }
 
-/* ── LOADING ── */
-#loading-screen{background:linear-gradient(135deg,#1a1a2e,#0f3460);align-items:center;justify-content:center}
-.load-box{text-align:center;color:#fff}
-.load-flowers{font-size:3.2rem;animation:pulse 1s ease-in-out infinite alternate}
-@keyframes pulse{from{transform:scale(.9);opacity:.7}to{transform:scale(1.1);opacity:1}}
-.load-text{font-family:‘Playfair Display’,serif;font-size:1.3rem;margin-top:18px;color:rgba(255,255,255,.8)}
-.load-sub{font-size:.82rem;color:rgba(255,255,255,.38);margin-top:7px}
+.heart-btn {
+position: absolute;
+background: none; border: none; padding: 8px;
+cursor: pointer; pointer-events: all;
+font-size: 3.6rem; line-height: 1;
+user-select: none; -webkit-user-select: none;
+touch-action: manipulation;
+filter: drop-shadow(0 4px 10px rgba(233,30,140,.45));
+/* Видны сразу + покачивание */
+opacity: 1;
+transform-origin: center;
+animation: hWobble 2.6s ease-in-out infinite alternate;
+}
+@keyframes hWobble {
+0%   { transform: translateY(0)    rotate(-5deg) scale(1);    }
+50%  { transform: translateY(-14px) rotate(3deg)  scale(1.06); }
+100% { transform: translateY(-20px) rotate(7deg)  scale(1.04); }
+}
+/* Поимка */
+.heart-btn.caught { animation: hCatch .5s ease forwards !important; pointer-events: none; }
+@keyframes hCatch { 0%{transform:scale(1);opacity:1} 40%{transform:scale(2.8) rotate(15deg);opacity:.8} 100%{transform:scale(0) translateY(-80px);opacity:0} }
 
-/* ── GAME ── */
-#game-screen{background:radial-gradient(ellipse at 30% 20%,#fce4ec,#e8f5e9 40%,#f3e5f5);align-items:center;justify-content:flex-start;padding-top:60px;position:relative;overflow:visible}
-.bg-petals{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:0}
-.bg-petal{position:absolute;opacity:.12;animation:drift linear infinite}
-@keyframes drift{0%{transform:translateY(-60px) rotate(0deg);opacity:0}5%{opacity:.12}95%{opacity:.07}100%{transform:translateY(110vh) rotate(540deg) translateX(40px);opacity:0}}
-.game-inner{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center}
-.for-name{font-family:‘Cormorant Garamond’,serif;font-size:1.15rem;color:var(–green);margin-bottom:5px;font-style:italic;opacity:.8}
-.game-h{font-family:‘Playfair Display’,serif;font-size:2.1rem;color:var(–text);margin-bottom:18px;line-height:1.2}
-.dots{display:flex;gap:7px;justify-content:center;margin-bottom:16px}
-.dot{font-size:1.15rem;filter:grayscale(1);opacity:.22;transition:all .3s}
-.dot.lit{filter:none;opacity:1;animation:dpop .5s cubic-bezier(.34,1.56,.64,1)}
-@keyframes dpop{0%{transform:scale(0) rotate(-20deg)}60%{transform:scale(1.5) rotate(5deg)}100%{transform:scale(1) rotate(0deg)}}
-.counter{background:var(–green);color:#fff;border-radius:40px;padding:10px 32px;font-size:1.35rem;font-weight:700;margin-bottom:40px;box-shadow:0 4px 20px rgba(46,125,50,.3)}
-.counter.pulse{animation:cpulse .4s ease}
-@keyframes cpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
-.hearts-area{position:fixed;inset:0;pointer-events:none;z-index:50}
-.heart{position:absolute;font-size:clamp(2.6rem,7vw,4.2rem);cursor:pointer;pointer-events:all;user-select:none;filter:drop-shadow(0 5px 10px rgba(233,30,140,.35));opacity:0;animation:henter .65s cubic-bezier(.34,1.56,.64,1) forwards,hwobble 3s .65s ease-in-out infinite alternate}
-@keyframes henter{0%{transform:scale(0) rotate(-35deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
-@keyframes hwobble{0%{transform:translateY(0) rotate(-6deg) scale(1)}35%{transform:translateY(-14px) rotate(4deg) scale(1.06)}100%{transform:translateY(-20px) rotate(7deg) scale(1.04)}}
-.heart:hover{filter:drop-shadow(0 0 16px rgba(233,30,140,.9))!important;transform:scale(1.28)!important;transition:transform .1s,filter .1s}
-.heart.gone{animation:hgone .5s cubic-bezier(.6,-.28,.74,.05) forwards!important;pointer-events:none}
-@keyframes hgone{0%{transform:scale(1);opacity:1}30%{transform:scale(2.2) rotate(15deg);opacity:.9}65%{transform:scale(3.8) rotate(-5deg) translateY(-40px);opacity:.4}100%{transform:scale(.1) translateY(-130px);opacity:0}}
-.burst{position:fixed;font-size:1.3rem;pointer-events:none;z-index:20;animation:bfly .9s cubic-bezier(0,.6,.4,1) forwards}
-@keyframes bfly{0%{transform:translate(0,0) scale(0);opacity:1}100%{transform:translate(var(–bx,0),var(–by,-80px)) scale(.2) rotate(var(–br,0deg));opacity:0}}
-.tdot{position:fixed;border-radius:50%;pointer-events:none;z-index:15;animation:tfade .55s forwards}
-@keyframes tfade{0%{transform:scale(1);opacity:.8}100%{transform:scale(0);opacity:0}}
-.flash{position:fixed;inset:0;pointer-events:none;z-index:5;background:radial-gradient(ellipse at center,rgba(244,143,177,.42),transparent 70%);opacity:0;animation:flashout .45s ease forwards}
-@keyframes flashout{0%{opacity:1}100%{opacity:0}}
+/* Вспышка */
+.cflash { position: fixed; inset: 0; pointer-events: none; z-index: 998; background: radial-gradient(ellipse at center,rgba(244,143,177,.5),transparent 65%); animation: cfl .4s ease forwards; }
+@keyframes cfl { 0%{opacity:1} 100%{opacity:0} }
 
-/* ── REVEAL ── */
-.reveal{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;opacity:0;pointer-events:none;transition:opacity .4s;overflow:hidden}
-.reveal.on{opacity:1;pointer-events:all}
-.reveal::before{content:’’;position:absolute;inset:-50%;background:conic-gradient(from 0deg at 50% 50%,#fce4ec,#e8f5e9,#fff9c4,#f3e5f5,#fce4ec);animation:rspin 4s linear infinite;opacity:.5}
-@keyframes rspin{to{transform:rotate(360deg)}}
-.reveal-bg{position:absolute;inset:0;background:linear-gradient(135deg,#fce4ec,#e8f5e9 50%,#fff9c4)}
-.bloom-row{position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:center}
-.bloom{display:inline-block;opacity:0;animation:blooming 1s cubic-bezier(.34,1.56,.64,1) forwards;transform-origin:bottom center}
-@keyframes blooming{0%{transform:scale(0) translateY(80px) rotate(-50deg);opacity:0;filter:blur(10px)}65%{transform:scale(1.3) translateY(-12px) rotate(6deg);opacity:1}100%{transform:scale(1) translateY(0) rotate(0);opacity:1}}
-.rpetal{position:absolute;pointer-events:none;z-index:2;animation:rp 1.2s cubic-bezier(0,.8,.4,1) forwards}
-@keyframes rp{0%{transform:translate(0,0) scale(0);opacity:1}100%{transform:translate(var(–px),var(–py)) scale(1) rotate(var(–pr,180deg));opacity:0}}
-.reveal-txt{position:relative;z-index:2;font-family:‘Playfair Display’,serif;font-size:1.9rem;font-style:italic;color:var(–text);opacity:0;margin-top:22px;animation:rtxt .8s 1.3s forwards;text-shadow:0 2px 20px rgba(255,255,255,.9)}
-@keyframes rtxt{from{opacity:0;transform:translateY(18px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+/* Частицы */
+.particle { position: fixed; pointer-events: none; z-index: 997; font-size: 1.2rem; animation: pfly .85s ease forwards; }
+@keyframes pfly { 0%{transform:translate(0,0) scale(0);opacity:1} 100%{transform:translate(var(–dx),var(–dy)) scale(.3) rotate(var(–dr));opacity:0} }
 
-/* ── GREETING ── */
-#greeting-screen{background:var(–bg);align-items:center;padding:0}
-.g-wrap{width:100%;max-width:480px;margin:0 auto;padding:36px 18px 56px}
-.g-head{text-align:center;margin-bottom:26px;opacity:0;animation:fup .8s .2s forwards}
-.g-flowers{font-size:4.5rem;line-height:1;margin-bottom:14px;display:block}
-.g-date{font-size:.8rem;letter-spacing:.3em;color:var(–green);text-transform:uppercase;margin-bottom:8px}
-.g-title{font-family:‘Playfair Display’,serif;font-size:2.6rem;font-style:italic;color:var(–text);line-height:1.2}
-.g-caught{text-align:center;font-size:1.4rem;margin-bottom:22px;opacity:0;animation:fup .8s .3s forwards}
-.g-card{background:rgba(255,255,255,.92);border-radius:22px;padding:28px;border-left:5px solid var(–green);box-shadow:0 8px 40px rgba(0,0,0,.08);margin-bottom:24px;opacity:0;animation:fup .8s .5s forwards}
-.g-text{font-family:‘Cormorant Garamond’,serif;font-size:1.35rem;font-style:italic;line-height:1.8;color:var(–text);white-space:pre-wrap}
-.g-sig{text-align:right;font-family:‘Cormorant Garamond’,serif;font-size:1.05rem;color:var(–green);margin-top:14px;font-style:italic}
-.photos-sec{opacity:0;animation:fup .8s .8s forwards;margin-bottom:0}
-.photos-ttl{font-size:1.1rem;color:var(–text);margin-bottom:14px;text-align:center}
-.photos-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
-.photo-cell{aspect-ratio:1;border-radius:14px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.12);transition:transform .3s}
-.photo-cell:hover{transform:scale(1.05) rotate(1deg)}
-.photo-cell img{width:100%;height:100%;object-fit:cover}
-.petal-fall{position:fixed;top:-50px;pointer-events:none;animation:pdrop linear forwards;z-index:1}
-@keyframes pdrop{0%{transform:translateY(0) rotate(0);opacity:.9}100%{transform:translateY(110vh) rotate(720deg) translateX(60px);opacity:0}}
-@keyframes fup{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-.confetti{position:fixed;pointer-events:none;z-index:50;border-radius:2px;animation:cfall linear forwards}
-@keyframes cfall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(110vh) rotate(var(–cr,360deg)) translateX(var(–cx,0))}}
-.share-row{text-align:center;margin-top:30px;opacity:0;animation:fup .8s 1.1s forwards;display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
-.btn-share{background:linear-gradient(135deg,var(–rose),var(–gold));border:none;border-radius:50px;color:#fff;font-family:‘Nunito’,sans-serif;font-size:.97rem;font-weight:700;padding:13px 30px;cursor:pointer;transition:all .25s;box-shadow:0 5px 20px rgba(233,30,140,.3)}
-.btn-share:hover{transform:translateY(-2px)}
-.btn-new{background:transparent;border:2px solid var(–green);border-radius:50px;color:var(–green);font-family:‘Nunito’,sans-serif;font-size:.87rem;font-weight:600;padding:11px 22px;cursor:pointer;transition:all .25s}
-.btn-new:hover{background:var(–green);color:#fff}
+/* REVEAL */
+.reveal { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; flex-direction: column; opacity: 0; pointer-events: none; transition: opacity .4s; overflow: hidden; }
+.reveal.on { opacity: 1; pointer-events: all; }
+.reveal-bg { position: absolute; inset: 0; background: linear-gradient(135deg,#fce4ec,#e8f5e9 50%,#fff9c4); }
+.bloom-row { position: relative; z-index: 1; display: flex; align-items: flex-end; justify-content: center; }
+.bloom { display: inline-block; opacity: 0; animation: blooming 1s cubic-bezier(.34,1.56,.64,1) forwards; transform-origin: bottom center; }
+@keyframes blooming { 0%{transform:scale(0) translateY(80px) rotate(-50deg);opacity:0;filter:blur(10px)} 65%{transform:scale(1.3) translateY(-12px) rotate(6deg);opacity:1} 100%{transform:scale(1) translateY(0) rotate(0);opacity:1} }
+.reveal-txt { position: relative; z-index: 1; font-family: ‘Playfair Display’,serif; font-size: 1.9rem; font-style: italic; color: #3e2723; opacity: 0; margin-top: 22px; animation: rtIn .8s 1.3s forwards; text-shadow: 0 2px 20px rgba(255,255,255,.9); }
+@keyframes rtIn { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:translateY(0)} }
 
-/* ── MODAL ── */
-.mo{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px}
-.mc{background:#fff;border-radius:24px;padding:28px 22px;max-width:440px;width:100%;box-shadow:0 20px 70px rgba(0,0,0,.28);text-align:center;animation:moin .38s cubic-bezier(.34,1.56,.64,1)}
-@keyframes moin{from{transform:scale(.7) translateY(28px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
-.mc-icon{font-size:2.8rem;margin-bottom:8px}
-.mc-title{font-family:‘Playfair Display’,serif;font-size:1.4rem;color:var(–text);margin-bottom:5px}
-.mc-sub{font-size:.8rem;color:#aaa;margin-bottom:16px;line-height:1.6}
-.url-row{display:flex;gap:7px;align-items:center;background:#f5f5f5;border-radius:11px;padding:9px 13px;margin-bottom:8px}
-.url-inp{flex:1;border:none;background:transparent;font-size:.76rem;color:#555;outline:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;cursor:text}
-.btn-cp{background:linear-gradient(135deg,var(–rose),var(–gold));border:none;border-radius:8px;color:#fff;font-weight:700;font-size:.8rem;padding:8px 13px;cursor:pointer;white-space:nowrap;font-family:‘Nunito’,sans-serif;flex-shrink:0}
-.copy-ok{color:var(–green);font-size:.82rem;font-weight:600;min-height:20px;margin-bottom:9px}
-.btn-ns{background:linear-gradient(135deg,#2e7d32,#66bb6a);border:none;border-radius:50px;color:#fff;font-family:‘Nunito’,sans-serif;font-size:.92rem;font-weight:700;padding:11px 26px;cursor:pointer;width:100%;margin-bottom:11px}
-.btn-close{background:transparent;border:2px solid #eee;border-radius:50px;color:#aaa;font-family:‘Nunito’,sans-serif;font-size:.85rem;padding:9px 20px;cursor:pointer}
-.btn-close:hover{border-color:#ccc;color:#777}
+/* Конфетти */
+.conf { position: fixed; pointer-events: none; z-index: 50; border-radius: 2px; animation: cfall linear forwards; }
+@keyframes cfall { 0%{opacity:1;transform:translateY(0) rotate(0)} 100%{opacity:0;transform:translateY(110vh) rotate(var(–cr,360deg)) translateX(var(–cx,0))} }
 
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(–green);color:#fff;padding:11px 22px;border-radius:50px;font-weight:600;font-size:.85rem;transition:transform .4s cubic-bezier(.34,1.56,.64,1);z-index:99999;white-space:nowrap}
-.toast.on{transform:translateX(-50%) translateY(0)}
+/* ОТКРЫТКА */
+#greeting-screen { background: #f0faf0; align-items: center; padding: 0; }
+.g-wrap { width: 100%; max-width: 480px; margin: 0 auto; padding: 36px 18px 60px; }
+.g-head { text-align: center; margin-bottom: 26px; opacity: 0; animation: fup .8s .2s forwards; }
+.g-flowers { font-size: 4.5rem; line-height: 1; margin-bottom: 14px; display: block; }
+.g-date { font-size: .8rem; letter-spacing: .3em; color: #2e7d32; text-transform: uppercase; margin-bottom: 8px; }
+.g-title { font-family: ‘Playfair Display’,serif; font-size: 2.6rem; font-style: italic; color: #3e2723; line-height: 1.2; }
+.g-caught { text-align: center; font-size: 1.4rem; margin-bottom: 22px; opacity: 0; animation: fup .8s .3s forwards; }
+.g-card { background: rgba(255,255,255,.92); border-radius: 22px; padding: 28px; border-left: 5px solid #2e7d32; box-shadow: 0 8px 40px rgba(0,0,0,.08); margin-bottom: 24px; opacity: 0; animation: fup .8s .5s forwards; }
+.g-text { font-family: ‘Cormorant Garamond’,serif; font-size: 1.35rem; font-style: italic; line-height: 1.8; color: #3e2723; white-space: pre-wrap; }
+.g-sig { text-align: right; font-family: ‘Cormorant Garamond’,serif; font-size: 1.05rem; color: #2e7d32; margin-top: 14px; font-style: italic; }
+.photos-sec { opacity: 0; animation: fup .8s .8s forwards; }
+.photos-ttl { font-size: 1.1rem; color: #3e2723; margin-bottom: 14px; text-align: center; }
+.photos-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 9px; }
+.photo-cell { aspect-ratio: 1; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 14px rgba(0,0,0,.12); }
+.photo-cell img { width: 100%; height: 100%; object-fit: cover; }
+.petal-fall { position: fixed; top: -50px; pointer-events: none; animation: pdrop linear forwards; z-index: 1; }
+@keyframes pdrop { 0%{transform:translateY(0) rotate(0);opacity:.9} 100%{transform:translateY(110vh) rotate(720deg) translateX(60px);opacity:0} }
+@keyframes fup { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+.share-row { text-align: center; margin-top: 30px; opacity: 0; animation: fup .8s 1.1s forwards; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.btn-share { background: linear-gradient(135deg,#e91e8c,#f9a825); border: none; border-radius: 50px; color: #fff; font-family: ‘Nunito’,sans-serif; font-size: .97rem; font-weight: 700; padding: 13px 30px; cursor: pointer; }
+.btn-new { background: transparent; border: 2px solid #2e7d32; border-radius: 50px; color: #2e7d32; font-family: ‘Nunito’,sans-serif; font-size: .87rem; font-weight: 600; padding: 11px 22px; cursor: pointer; transition: all .25s; }
+.btn-new:hover { background: #2e7d32; color: #fff; }
 
-@media(max-width:460px){
-.card{padding:22px 16px}.card-title{font-size:1.55rem}
-.g-wrap{padding:22px 13px 46px}.g-title{font-size:2rem}.g-text{font-size:1.18rem}
+/* МОДАЛКА */
+.mo { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,.6); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px; }
+.mc { background: #fff; border-radius: 24px; padding: 28px 22px; max-width: 440px; width: 100%; box-shadow: 0 20px 70px rgba(0,0,0,.28); text-align: center; animation: moin .38s cubic-bezier(.34,1.56,.64,1); }
+@keyframes moin { from{transform:scale(.7) translateY(28px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
+.mc-icon { font-size: 2.8rem; margin-bottom: 8px; }
+.mc-title { font-family: ‘Playfair Display’,serif; font-size: 1.4rem; color: #3e2723; margin-bottom: 5px; }
+.mc-sub { font-size: .8rem; color: #aaa; margin-bottom: 16px; line-height: 1.6; }
+.url-row { display: flex; gap: 7px; align-items: center; background: #f5f5f5; border-radius: 11px; padding: 9px 13px; margin-bottom: 8px; }
+.url-inp { flex: 1; border: none; background: transparent; font-size: .76rem; color: #555; outline: none; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.btn-cp { background: linear-gradient(135deg,#e91e8c,#f9a825); border: none; border-radius: 8px; color: #fff; font-weight: 700; font-size: .8rem; padding: 8px 13px; cursor: pointer; white-space: nowrap; font-family: ‘Nunito’,sans-serif; }
+.copy-ok { color: #2e7d32; font-size: .82rem; font-weight: 600; min-height: 20px; margin-bottom: 9px; }
+.btn-ns { background: linear-gradient(135deg,#2e7d32,#66bb6a); border: none; border-radius: 50px; color: #fff; font-family: ‘Nunito’,sans-serif; font-size: .92rem; font-weight: 700; padding: 11px 26px; cursor: pointer; width: 100%; margin-bottom: 11px; }
+.btn-close { background: transparent; border: 2px solid #eee; border-radius: 50px; color: #aaa; font-family: ‘Nunito’,sans-serif; font-size: .85rem; padding: 9px 20px; cursor: pointer; }
+
+/* ТОСТ */
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px); background: #2e7d32; color: #fff; padding: 11px 22px; border-radius: 50px; font-weight: 600; font-size: .85rem; transition: transform .4s cubic-bezier(.34,1.56,.64,1); z-index: 99999; white-space: nowrap; }
+.toast.on { transform: translateX(-50%) translateY(0); }
+
+@media(max-width:460px) {
+.card{ padding: 22px 16px; } .card-title{ font-size: 1.55rem; }
+.g-wrap{ padding: 22px 13px 46px; } .g-title{ font-size: 2rem; } .g-text{ font-size: 1.18rem; }
 }
 </style>
 
 </head>
 <body>
 
-<!-- BUILDER -->
+<!-- КОНСТРУКТОР -->
 
 <div id="builder-screen" class="screen active">
- <div class="card">
-  <h1 class="card-title">💝 Поздравление для мамы</h1>
-  <p class="card-sub">Мама поймает сердечки и увидит твоё послание 🌸</p>
-  <div class="field">
-   <label class="label">✍️ Кому</label>
-   <input id="inp-name" class="inp" placeholder="Мамочка..." value="Мамочка">
-  </div>
-  <div class="field">
-   <label class="label">💌 Поздравление</label>
-   <textarea id="inp-text" class="ta">Мама, поздравляю тебя с 8 марта! 🌷
+  <div class="card">
+    <h1 class="card-title">💝 Поздравление для мамы</h1>
+    <p class="card-sub">Мама поймает сердечки и увидит твоё послание 🌸</p>
+    <div class="field">
+      <label class="label">✍️ Кому</label>
+      <input id="inp-name" class="inp" placeholder="Мамочка..." value="Мамочка">
+    </div>
+    <div class="field">
+      <label class="label">💌 Поздравление</label>
+      <textarea id="inp-text" class="ta">Мама, поздравляю тебя с 8 марта! 🌷
 
 Спасибо за твою заботу, терпение и любовь. Ты самый родной человек в моей жизни.
 Желаю тебе здоровья, радости и счастливых моментов! 🌸</textarea>
+</div>
+<div class="field">
+<label class="label">🖊️ Подпись</label>
+<input id="inp-sig" class="inp" placeholder="— Сына..." value="— Сына">
+</div>
+<div class="field">
+<label class="label">📸 Фото (до 3)</label>
+<div class="photo-zone" id="pzone">
+<input type="file" id="pinput" accept="image/*" multiple style="display:none">
+<div class="pz-icon">🌸</div>
+<div class="pz-text" id="pz-txt">Нажми чтобы добавить фото</div>
+<div class="pz-hint">до 3 фотографий</div>
+</div>
+<div class="thumbs" id="thumbs"></div>
+<div class="pcount" id="pcount"></div>
+</div>
+<button class="btn-main" id="btn-go">🎉 Создать сюрприз для мамы</button>
 
   </div>
-  <div class="field">
-   <label class="label">🖊️ Подпись</label>
-   <input id="inp-sig" class="inp" placeholder="— Сына..." value="— Сына">
-  </div>
-  <div class="field">
-   <label class="label">📸 Фото (до 3)</label>
-   <div class="photo-zone" id="pzone">
-    <input type="file" id="pinput" accept="image/*" multiple style="display:none">
-    <div class="photo-zone-icon">🌸</div>
-    <div class="photo-zone-text" id="pzone-txt">Нажми чтобы добавить фото</div>
-    <div class="photo-zone-hint">до 3 фотографий</div>
-   </div>
-   <div class="thumbs" id="thumbs"></div>
-   <div class="photo-count" id="pcount"></div>
-  </div>
-  <button class="btn-main" id="btn-go">🎉 Создать сюрприз для мамы</button>
- </div>
 </div>
 
-<!-- LOADING -->
-
-<div id="loading-screen" class="screen">
- <div class="load-box">
-  <div class="load-flowers">🌸🌼🌺</div>
-  <div class="load-text">Создаём сюрприз...</div>
-  <div class="load-sub">секунду!</div>
- </div>
-</div>
-
-<!-- GAME -->
+<!-- ИГРА -->
 
 <div id="game-screen" class="screen">
- <div class="bg-petals" id="bg-petals"></div>
- <div class="game-inner">
-  <div class="for-name" id="for-name">для Мамочки</div>
-  <h1 class="game-h">Поймай 8 сердечек 💝</h1>
-  <div class="dots" id="dots"></div>
-  <div class="counter" id="counter">0 / 8</div>
- </div>
- <div class="hearts-area" id="hearts-area"></div>
+  <div class="bg-petals" id="bg-petals"></div>
+  <div class="game-inner">
+    <div class="for-name" id="for-name">для Мамочки</div>
+    <h1 class="game-h">Поймай 8 сердечек 💝</h1>
+    <div class="dots" id="dots"></div>
+    <div class="counter" id="counter">0 / 8</div>
+  </div>
 </div>
+
+<!-- Слой сердечек — всегда поверх всего -->
+
+<div id="hearts-layer"></div>
 
 <!-- REVEAL -->
 
 <div class="reveal" id="reveal">
- <div class="reveal-bg"></div>
- <div class="bloom-row">
-  <span class="bloom" style="font-size:5rem;animation-delay:0s">🌸</span>
-  <span class="bloom" style="font-size:7rem;animation-delay:.2s">🌼</span>
-  <span class="bloom" style="font-size:9.5rem;animation-delay:.38s">🌺</span>
-  <span class="bloom" style="font-size:7rem;animation-delay:.54s">🌼</span>
-  <span class="bloom" style="font-size:5rem;animation-delay:.68s">🌷</span>
- </div>
- <div class="reveal-txt" id="reveal-txt">С праздником! 💝</div>
+  <div class="reveal-bg"></div>
+  <div class="bloom-row">
+    <span class="bloom" style="font-size:5rem;animation-delay:0s">🌸</span>
+    <span class="bloom" style="font-size:7rem;animation-delay:.2s">🌼</span>
+    <span class="bloom" style="font-size:9.5rem;animation-delay:.38s">🌺</span>
+    <span class="bloom" style="font-size:7rem;animation-delay:.54s">🌼</span>
+    <span class="bloom" style="font-size:5rem;animation-delay:.68s">🌷</span>
+  </div>
+  <div class="reveal-txt" id="reveal-txt">С праздником! 💝</div>
 </div>
 
-<!-- GREETING -->
+<!-- ОТКРЫТКА -->
 
 <div id="greeting-screen" class="screen">
- <div class="g-wrap">
-  <div class="g-head">
-   <span class="g-flowers">🌸🌼🌺</span>
-   <div class="g-date">8 МАРТА</div>
-   <div class="g-title" id="g-title">С Праздником!</div>
+  <div class="g-wrap">
+    <div class="g-head">
+      <span class="g-flowers">🌸🌼🌺</span>
+      <div class="g-date">8 МАРТА</div>
+      <div class="g-title" id="g-title">С Праздником!</div>
+    </div>
+    <div class="g-caught">🎉 Ты поймала все сердечки! 🎉</div>
+    <div class="g-card">
+      <div class="g-text" id="g-text"></div>
+      <div class="g-sig"  id="g-sig"></div>
+    </div>
+    <div class="photos-sec" id="photos-sec">
+      <div class="photos-ttl">📸 Наши моменты</div>
+      <div class="photos-grid" id="photos-grid"></div>
+    </div>
+    <div class="share-row">
+      <button class="btn-share" id="btn-share">📤 Поделиться с мамой</button>
+      <button class="btn-new" onclick="resetCard()">+ Новая открытка</button>
+    </div>
   </div>
-  <div class="g-caught">🎉 Ты поймала все сердечки! 🎉</div>
-  <div class="g-card">
-   <div class="g-text" id="g-text"></div>
-   <div class="g-sig" id="g-sig"></div>
-  </div>
-  <div class="photos-sec" id="photos-sec">
-   <div class="photos-ttl">📸 Наши моменты</div>
-   <div class="photos-grid" id="photos-grid"></div>
-  </div>
-  <div class="share-row">
-   <button class="btn-share" id="btn-share">📤 Поделиться с мамой</button>
-   <button class="btn-new" onclick="reset()">+ Новая открытка</button>
-  </div>
- </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-var G = {name:'Мамочка', text:'', sig:'— Сына', photos:[]};
-var EMOJI=['💝','💖','💗','💓','💕','💞','❤️','🩷'];
+/* ============================================================
+   ДАННЫЕ
+============================================================ */
+var G = { name:'Мамочка', text:'', sig:'— Сына', photos:[] };
+var TOTAL   = 8;
+var EMOJIS  = ['💝','💖','💗','💓','💕','💞','❤️','🩷'];
+var caught  = 0;
+var gameTimers = [];
 
-// Текст в ?d= параметре (мессенджеры не режут), фото только локально
-function save(d){
-  var textOnly = {n:d.n, t:d.t, s:d.s};
-  // Кириллица-безопасное кодирование
-  var str = encodeURIComponent(JSON.stringify(textOnly));
-  var base = window.location.href.split('?')[0].split('#')[0];
-  window.history.replaceState({}, '', base + '?d=' + str);
-  try{ sessionStorage.setItem('card_photos', JSON.stringify(d.p||[])); }catch(e){}
+/* ============================================================
+   СОХРАНЕНИЕ / ЗАГРУЗКА (URL-параметр ?d=)
+============================================================ */
+function saveData(d) {
+  var obj = { n: d.name, t: d.text, s: d.sig };
+  var encoded = encodeURIComponent(JSON.stringify(obj));
+  var base = location.href.split('?')[0].split('#')[0];
+  try { history.replaceState({}, '', base + '?d=' + encoded); } catch(e) {}
+  try { sessionStorage.setItem('photos', JSON.stringify(d.photos || [])); } catch(e) {}
 }
-function load(){
-  var params = new URLSearchParams(window.location.search);
-  var d64 = params.get('d');
-  if(!d64) return null;
-  try{
-    var d = JSON.parse(decodeURIComponent(d64));
+
+function loadData() {
+  var raw = new URLSearchParams(location.search).get('d');
+  if (!raw) return null;
+  try {
+    var obj = JSON.parse(decodeURIComponent(raw));
     var photos = [];
-    try{ photos = JSON.parse(sessionStorage.getItem('card_photos')||'[]'); }catch(e){}
-    return {name:d.n, text:d.t, sig:d.s, photos:photos};
-  }catch(e){ return null; }
+    try { photos = JSON.parse(sessionStorage.getItem('photos') || '[]'); } catch(e) {}
+    return { name: obj.n||'Мамочка', text: obj.t||'', sig: obj.s||'', photos: photos };
+  } catch(e) { return null; }
 }
 
-// Photos
-document.getElementById('pzone').addEventListener('click',function(){
-  if(G.photos.length>=3) return;
+/* ============================================================
+   ФОТО
+============================================================ */
+document.getElementById('pzone').addEventListener('click', function() {
+  if (G.photos.length >= 3) return;
   document.getElementById('pinput').click();
 });
-document.getElementById('pinput').addEventListener('change',function(e){
-  var files=Array.from(e.target.files).slice(0,3-G.photos.length);
-  e.target.value='';
-  var done=0;
-  if(!files.length) return;
-  files.forEach(function(f){
-    var r=new FileReader();
-    r.onload=function(ev){
-      var img=new Image();
-      img.onload=function(){
-        var MAX=500,w=img.width,h=img.height;
-        if(w>MAX||h>MAX){if(w>h){h=Math.round(h*MAX/w);w=MAX;}else{w=Math.round(w*MAX/h);h=MAX;}}
-        var c=document.createElement('canvas');c.width=w;c.height=h;
-        c.getContext('2d').drawImage(img,0,0,w,h);
-        G.photos.push(c.toDataURL('image/jpeg',.6));
-        if(++done===files.length) renderThumbs();
+
+document.getElementById('pinput').addEventListener('change', function(e) {
+  var files = Array.from(e.target.files).slice(0, 3 - G.photos.length);
+  e.target.value = '';
+  if (!files.length) return;
+  var done = 0;
+  files.forEach(function(f) {
+    var r = new FileReader();
+    r.onload = function(ev) {
+      var img = new Image();
+      img.onload = function() {
+        var MAX = 500, w = img.width, h = img.height;
+        if (w > MAX || h > MAX) {
+          if (w > h) { h = Math.round(h*MAX/w); w = MAX; }
+          else       { w = Math.round(w*MAX/h); h = MAX; }
+        }
+        var c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        G.photos.push(c.toDataURL('image/jpeg', .6));
+        if (++done === files.length) renderThumbs();
       };
-      img.src=ev.target.result;
+      img.src = ev.target.result;
     };
     r.readAsDataURL(f);
   });
 });
 
-function renderThumbs(){
-  var t=document.getElementById('thumbs');
-  t.innerHTML=G.photos.map(function(s,i){
+function renderThumbs() {
+  var t = document.getElementById('thumbs');
+  t.innerHTML = G.photos.map(function(s, i) {
     return '<div class="thumb"><img src="'+s+'"><button class="thumb-del" data-i="'+i+'">✕</button></div>';
   }).join('');
-  t.querySelectorAll('.thumb-del').forEach(function(b){
-    b.addEventListener('click',function(e){
+  t.querySelectorAll('.thumb-del').forEach(function(b) {
+    b.addEventListener('click', function(e) {
       e.stopPropagation();
-      G.photos.splice(+this.getAttribute('data-i'),1);
+      G.photos.splice(+this.dataset.i, 1);
       renderThumbs();
     });
   });
-  document.getElementById('pcount').textContent=G.photos.length?G.photos.length+' / 3 фото':'';
-  document.getElementById('pzone-txt').textContent=G.photos.length>=3?'Максимум достигнут':'Нажми чтобы добавить фото';
-  document.getElementById('pzone').style.opacity=G.photos.length>=3?'.5':'1';
+  document.getElementById('pcount').textContent = G.photos.length ? G.photos.length + ' / 3 фото' : '';
+  document.getElementById('pz-txt').textContent  = G.photos.length >= 3 ? 'Максимум достигнут' : 'Нажми чтобы добавить фото';
+  document.getElementById('pzone').style.opacity = G.photos.length >= 3 ? '.5' : '1';
 }
 
-// Create
-document.getElementById('btn-go').addEventListener('click',function(){
-  G.name = document.getElementById('inp-name').value.trim()||'Мамочка';
+/* ============================================================
+   КНОПКА «СОЗДАТЬ»
+============================================================ */
+document.getElementById('btn-go').addEventListener('click', function() {
+  G.name = document.getElementById('inp-name').value.trim() || 'Мамочка';
   G.text = document.getElementById('inp-text').value;
-  G.sig  = document.getElementById('inp-sig').value.trim()||'— С любовью';
-  save({n:G.name,t:G.text,s:G.sig,p:G.photos});
+  G.sig  = document.getElementById('inp-sig').value.trim()  || '— С любовью';
+  saveData(G);
   startGame();
 });
 
-// Game
-function startGame(){
-  go('game-screen');
-  caught=0; timers.forEach(clearTimeout); timers=[];
-  document.getElementById('for-name').textContent='для '+G.name;
-  document.getElementById('counter').textContent='0 / '+TOTAL;
-  document.getElementById('dots').innerHTML=Array(TOTAL).fill(0).map(function(_,i){return '<span class="dot" id="d'+i+'">💝</span>';}).join('');
-  var bg=document.getElementById('bg-petals'); bg.innerHTML='';
-  ['🌸','🌺','🌼','🌷','✿'].forEach(function(p){
-    for(var j=0;j<2;j++){
-      var el=document.createElement('div');el.className='bg-petal';el.textContent=p;
-      el.style.cssText='left:'+Math.random()*100+'%;font-size:'+(1.2+Math.random()*2.4)+'rem;animation-duration:'+(11+Math.random()*11)+'s;animation-delay:'+Math.random()*15+'s';
-      bg.appendChild(el);
+/* ============================================================
+   ИГРА
+============================================================ */
+function startGame() {
+  showScreen('game-screen');
+  caught = 0;
+  gameTimers.forEach(clearTimeout);
+  gameTimers = [];
+
+  // Очистить старые сердечки
+  document.getElementById('hearts-layer').innerHTML = '';
+
+  // Заголовок
+  document.getElementById('for-name').textContent = 'для ' + G.name;
+  document.getElementById('counter').textContent  = '0 / ' + TOTAL;
+
+  // Точки прогресса
+  var dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = '';
+  for (var i = 0; i < TOTAL; i++) {
+    var d = document.createElement('span');
+    d.className = 'dot'; d.id = 'dot' + i; d.textContent = '💝';
+    dotsEl.appendChild(d);
+  }
+
+  // Фоновые лепестки
+  var bgEl = document.getElementById('bg-petals');
+  bgEl.innerHTML = '';
+  ['🌸','🌺','🌼','🌷','✿'].forEach(function(p) {
+    for (var j = 0; j < 2; j++) {
+      var el = document.createElement('div');
+      el.className = 'bg-petal'; el.textContent = p;
+      el.style.left = Math.random()*100+'%';
+      el.style.fontSize = (1.2+Math.random()*2.4)+'rem';
+      el.style.animationDuration = (11+Math.random()*11)+'s';
+      el.style.animationDelay = (Math.random()*15)+'s';
+      bgEl.appendChild(el);
     }
   });
-  document.getElementById('hearts-area').innerHTML='';
-  for(var i=0;i<TOTAL;i++){
-    (function(i){timers.push(setTimeout(function(){spawn(i);},i*490+Math.random()*230));})(i);
+
+  // Спавним 8 сердечек с разными задержками
+  for (var k = 0; k < TOTAL; k++) {
+    (function(idx) {
+      var t = setTimeout(function() { spawnHeart(idx); }, idx * 520 + Math.random() * 180);
+      gameTimers.push(t);
+    })(k);
   }
 }
 
-function spawn(i){
-  if(caught>=TOTAL)return;
-  var area=document.getElementById('hearts-area');
-  var el=document.createElement('div');el.className='heart';el.textContent=EMOJI[i];
-  // Используем проценты — работает на всех устройствах
-  var xp = 10 + Math.random()*80; // 10%–90% по горизонтали
-  var yp = 15 + Math.random()*60; // 15%–75% по вертикали
-  el.style.left=xp+'%';el.style.top=yp+'%';
-  el.style.animationDelay='0s,'+(0.65+Math.random()*.4)+'s';
-  el.style.animationDuration='.65s,'+(2.4+Math.random()*1.8)+'s';
-  // Для catch_ считаем px из процентов
-  var fn=function(ev){
-    ev.preventDefault();
-    var r=el.getBoundingClientRect();
-    catch_(el, r.left+r.width/2, r.top+r.height/2);
-  };
-  el.addEventListener('click',fn);el.addEventListener('touchstart',fn,{passive:false});
-  area.appendChild(el);
+function spawnHeart(idx) {
+  if (caught >= TOTAL) return;
+
+  var layer = document.getElementById('hearts-layer');
+  var btn   = document.createElement('button');
+  btn.className = 'heart-btn';
+  btn.textContent = EMOJIS[idx];
+
+  // Позиция в % от экрана (10–82% по X, 18–73% по Y)
+  // Гарантированно в пределах видимой области
+  var xPct = 10 + Math.random() * 72;
+  var yPct = 18 + Math.random() * 55;
+  btn.style.left = xPct + '%';
+  btn.style.top  = yPct + '%';
+
+  // Сердечко видно сразу, wobble уже в CSS
+
+  // Поимка — pointerdown работает и на touch и на mouse
+  btn.addEventListener('pointerdown', function(e) {
+    e.preventDefault();
+    if (btn.classList.contains('caught')) return;
+    btn.classList.add('caught');
+    clearTimeout(btn._kill);
+    onCatch(btn, e.clientX, e.clientY);
+  });
+
+  layer.appendChild(btn);
+
+  // Если не поймали за 14 сек — убрать и заспавнить снова
+  btn._kill = setTimeout(function() {
+    if (!btn.classList.contains('caught')) {
+      btn.remove();
+      if (caught < TOTAL) spawnHeart(idx);
+    }
+  }, 14000);
 }
 
-function catch_(el,cx,cy){
-  if(el.classList.contains('gone'))return;
-  el.classList.add('gone');caught++;
-  var fl=document.createElement('div');fl.className='flash';document.body.appendChild(fl);setTimeout(function(){fl.remove();},500);
-  var d=document.getElementById('d'+(caught-1));if(d)d.classList.add('lit');
-  var ctr=document.getElementById('counter');
-  ctr.textContent=caught+' / '+TOTAL;ctr.classList.remove('pulse');void ctr.offsetWidth;ctr.classList.add('pulse');
-  var em=el.textContent;
-  for(var i=0;i<8;i++){(function(i){
-    var b=document.createElement('div');b.className='burst';
-    var a=(i/8)*Math.PI*2,d=60+Math.random()*60;
-    b.style.cssText='left:'+cx+'px;top:'+cy+'px;--bx:'+Math.cos(a)*d+'px;--by:'+(Math.sin(a)*d-45)+'px;--br:'+(Math.random()*360)+'deg;animation-delay:'+(i*.03)+'s;font-size:'+(0.9+Math.random()*.8)+'rem';
-    b.textContent=em;document.body.appendChild(b);setTimeout(function(){b.remove();},1000);
-  })(i);}
-  var tc=['#f48fb1','#f9a825','#a5d6a7','#81d4fa','#ce93d8'];
-  for(var j=0;j<6;j++){(function(j){setTimeout(function(){
-    var td=document.createElement('div');td.className='tdot';
-    td.style.cssText='left:'+(cx+(Math.random()-.5)*50)+'px;top:'+(cy+(Math.random()-.5)*50)+'px;background:'+tc[j%tc.length]+';width:'+(5+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px';
-    document.body.appendChild(td);setTimeout(function(){td.remove();},620);
-  },j*42);})(j);}
-  setTimeout(function(){el.remove();},520);
-  if(caught>=TOTAL)setTimeout(showReveal,700);
+function onCatch(btn, cx, cy) {
+  caught++;
+  if (navigator.vibrate) navigator.vibrate(30);
+
+  // Вспышка экрана
+  var fl = document.createElement('div'); fl.className = 'cflash';
+  document.body.appendChild(fl);
+  setTimeout(function() { fl.remove(); }, 500);
+
+  // Частицы
+  var em = btn.textContent;
+  for (var i = 0; i < 8; i++) {
+    (function(i) {
+      var p = document.createElement('div'); p.className = 'particle';
+      var a = (i/8)*Math.PI*2, d = 60+Math.random()*60;
+      p.style.left = cx+'px'; p.style.top = cy+'px';
+      p.style.setProperty('--dx', Math.cos(a)*d+'px');
+      p.style.setProperty('--dy', Math.sin(a)*d+'px');
+      p.style.setProperty('--dr', (Math.random()*360)+'deg');
+      p.style.animationDelay = (i*.03)+'s';
+      p.textContent = em;
+      document.body.appendChild(p);
+      setTimeout(function(){p.remove();}, 950);
+    })(i);
+  }
+
+  // Убрать кнопку
+  setTimeout(function() { btn.remove(); }, 600);
+
+  // Точка прогресса
+  var dot = document.getElementById('dot'+(caught-1));
+  if (dot) dot.classList.add('lit');
+
+  // Счётчик
+  var ctr = document.getElementById('counter');
+  ctr.textContent = caught + ' / ' + TOTAL;
+  ctr.classList.remove('pop'); void ctr.offsetWidth; ctr.classList.add('pop');
+
+  if (caught >= TOTAL) setTimeout(showReveal, 800);
 }
 
-function showReveal(){
-  var rv=document.getElementById('reveal');
-  document.getElementById('reveal-txt').textContent='С праздником, '+G.name+'! 💝';
+/* ============================================================
+   REVEAL
+============================================================ */
+function showReveal() {
+  document.getElementById('hearts-layer').innerHTML = '';
+  var rv = document.getElementById('reveal');
+  document.getElementById('reveal-txt').textContent = 'С праздником, ' + G.name + '! 💝';
   rv.classList.add('on');
-  var pp=['🌸','🌺','🌼','🌷','💐','🌻'];
-  for(var i=0;i<22;i++){(function(i){setTimeout(function(){
-    var p=document.createElement('div');p.className='rpetal';
-    var a=Math.random()*Math.PI*2,d=120+Math.random()*220;
-    p.style.cssText='left:50vw;top:44vh;--px:'+Math.cos(a)*d+'px;--py:'+Math.sin(a)*d+'px;--pr:'+(Math.random()*720)+'deg;animation-duration:'+(0.9+Math.random()*.6)+'s;animation-delay:'+(i*.035)+'s;font-size:'+(1.2+Math.random()*1.1)+'rem';
-    p.textContent=pp[Math.floor(Math.random()*pp.length)];rv.appendChild(p);setTimeout(function(){p.remove();},2200);
-  },i*35);})(i);}
-  confetti_();
-  setTimeout(function(){rv.classList.remove('on');showGreeting();},2500);
+  confetti();
+  setTimeout(function() { rv.classList.remove('on'); showGreeting(); }, 2700);
 }
 
-function confetti_(){
-  var cc=['#f48fb1','#f9a825','#a5d6a7','#81d4fa','#ce93d8','#ff8a65','#fff176'];
-  for(var i=0;i<100;i++){(function(){
-    var c=document.createElement('div');c.className='confetti';
-    var dur=2.2+Math.random()*3;
-    c.style.cssText='left:'+Math.random()*100+'vw;top:-10px;background:'+cc[Math.floor(Math.random()*cc.length)]+';width:'+(5+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px;border-radius:'+(Math.random()>.5?'50%':'3px')+';animation-duration:'+dur+'s;animation-delay:'+(Math.random()*.8)+'s;--cr:'+(Math.random()*720)+'deg;--cx:'+((Math.random()-.5)*80)+'px';
-    document.body.appendChild(c);setTimeout(function(){c.remove();},(dur+1)*1000);
-  })();}
-}
-
-function showGreeting(){
-  go('greeting-screen');
-  document.getElementById('g-title').innerHTML='С Праздником,<br>'+G.name+'!';
-  document.getElementById('g-text').textContent=G.text;
-  document.getElementById('g-sig').textContent=G.sig;
-  var grid=document.getElementById('photos-grid'),sec=document.getElementById('photos-sec');
-  if(G.photos&&G.photos.length){
-    grid.innerHTML=G.photos.map(function(s){return '<div class="photo-cell"><img src="'+s+'"></div>';}).join('');
-    sec.style.display='';
-  }else sec.style.display='none';
-  document.getElementById('btn-share').onclick=share_;
-  petals_();
-}
-
-function petals_(){
-  var pp=['🌸','🌺','🌼','🌷','✿'];
-  for(var i=0;i<24;i++){(function(i){setTimeout(function(){
-    var el=document.createElement('div');el.className='petal-fall';
-    var dur=4+Math.random()*5;
-    el.style.cssText='left:'+Math.random()*100+'vw;font-size:'+(0.8+Math.random()*1.2)+'rem;animation-duration:'+dur+'s';
-    el.textContent=pp[Math.floor(Math.random()*pp.length)];
-    document.body.appendChild(el);setTimeout(function(){el.remove();},dur*1000+400);
-  },i*270);})(i);}
-}
-
-// Share
-function share_(){
-  // href уже содержит ?d=... (установлен при save())
-  var fullUrl = window.location.href.split('#')[0];
-  if(fullUrl.indexOf('?d=') === -1){
-    toast_('Сначала создай открытку!');
-    return;
+function confetti() {
+  var cols = ['#f48fb1','#f9a825','#a5d6a7','#81d4fa','#ce93d8','#ff8a65','#fff176'];
+  for (var i = 0; i < 100; i++) {
+    (function() {
+      var c = document.createElement('div'); c.className = 'conf';
+      var dur = 2.2 + Math.random()*3;
+      c.style.cssText = 'left:'+Math.random()*100+'vw;top:-10px;background:'+cols[Math.floor(Math.random()*cols.length)]+';width:'+(5+Math.random()*8)+'px;height:'+(5+Math.random()*8)+'px;border-radius:'+(Math.random()>.5?'50%':'3px')+';animation-duration:'+dur+'s;animation-delay:'+(Math.random()*.8)+'s;--cr:'+(Math.random()*720)+'deg;--cx:'+((Math.random()-.5)*80)+'px';
+      document.body.appendChild(c);
+      setTimeout(function(){c.remove();},(dur+1)*1000);
+    })();
   }
-  modal_(fullUrl);
 }
 
-function modal_(url){
-  var old=document.getElementById('_mo');if(old)old.remove();
-  var ov=document.createElement('div');ov.id='_mo';ov.className='mo';
-  var box=document.createElement('div');box.className='mc';
+/* ============================================================
+   ОТКРЫТКА
+============================================================ */
+function showGreeting() {
+  showScreen('greeting-screen');
+  document.getElementById('g-title').innerHTML = 'С Праздником,<br>' + G.name + '!';
+  document.getElementById('g-text').textContent = G.text;
+  document.getElementById('g-sig').textContent  = G.sig;
 
-  var icon=document.createElement('div');icon.className='mc-icon';icon.textContent='🌸';
-  var ttl=document.createElement('div');ttl.className='mc-title';ttl.textContent='Отправь маме!';
-  var sub=document.createElement('div');sub.className='mc-sub';sub.textContent='Она откроет ссылку и сразу начнёт ловить сердечки 💝';
-  box.appendChild(icon);box.appendChild(ttl);box.appendChild(sub);
+  var sec = document.getElementById('photos-sec');
+  var grid = document.getElementById('photos-grid');
+  if (G.photos && G.photos.length) {
+    grid.innerHTML = G.photos.map(function(s){ return '<div class="photo-cell"><img src="'+s+'"></div>'; }).join('');
+    sec.style.display = '';
+  } else {
+    sec.style.display = 'none';
+  }
 
-  if(navigator.share){
-    var nb=document.createElement('button');nb.className='btn-ns';nb.textContent='📱 Поделиться через телефон';
-    nb.onclick=function(){var v=document.getElementById('_url');navigator.share({title:'Поздравление 💝',url:v?v.value:url}).catch(function(){});};
+  document.getElementById('btn-share').onclick = shareCard;
+  petals();
+}
+
+function petals() {
+  var pp = ['🌸','🌺','🌼','🌷','✿'];
+  for (var i = 0; i < 22; i++) {
+    (function(i) {
+      setTimeout(function() {
+        var el = document.createElement('div'); el.className = 'petal-fall';
+        var dur = 4 + Math.random()*5;
+        el.style.left = Math.random()*100+'vw';
+        el.style.fontSize = (.8+Math.random()*1.2)+'rem';
+        el.style.animationDuration = dur+'s';
+        el.textContent = pp[Math.floor(Math.random()*pp.length)];
+        document.body.appendChild(el);
+        setTimeout(function(){el.remove();}, dur*1000+400);
+      }, i*280);
+    })(i);
+  }
+}
+
+/* ============================================================
+   ПОДЕЛИТЬСЯ
+============================================================ */
+function shareCard() {
+  var url = location.href.split('#')[0];
+  if (url.indexOf('?d=') === -1) { toast('Сначала создай открытку!'); return; }
+  openModal(url);
+}
+
+function openModal(url) {
+  var old = document.getElementById('_mo'); if (old) old.remove();
+  var ov = document.createElement('div'); ov.id = '_mo'; ov.className = 'mo';
+  var box = document.createElement('div'); box.className = 'mc';
+
+  var mkEl = function(tag, cls, txt) {
+    var el = document.createElement(tag); if (cls) el.className = cls; if (txt) el.textContent = txt; return el;
+  };
+
+  box.appendChild(mkEl('div','mc-icon','🌸'));
+  box.appendChild(mkEl('div','mc-title','Отправь маме!'));
+  box.appendChild(mkEl('div','mc-sub','Она откроет ссылку и сразу начнёт ловить сердечки 💝'));
+
+  if (navigator.share) {
+    var nb = mkEl('button','btn-ns','📱 Поделиться через телефон');
+    nb.onclick = function() { navigator.share({title:'Поздравление 💝', url:url}).catch(function(){}); };
     box.appendChild(nb);
   }
 
-  var row=document.createElement('div');row.className='url-row';
-  var inp=document.createElement('input');inp.type='text';inp.className='url-inp';inp.id='_url';
-  inp.value=url;inp.readOnly=true;
-  inp.addEventListener('click',function(){this.select();});
-  var cp=document.createElement('button');cp.className='btn-cp';cp.textContent='Копировать';cp.onclick=doCopy;
-  row.appendChild(inp);row.appendChild(cp);
+  var row = mkEl('div','url-row');
+  var inp = mkEl('input'); inp.type='text'; inp.className='url-inp'; inp.id='_url';
+  inp.value = url; inp.readOnly = true;
+  inp.addEventListener('click', function(){this.select();});
 
-  var ok=document.createElement('div');ok.className='copy-ok';ok.id='_cok';
-  var cl=document.createElement('button');cl.className='btn-close';cl.textContent='Закрыть';cl.onclick=function(){ov.remove();};
+  var cpBtn = mkEl('button','btn-cp','Копировать');
+  cpBtn.onclick = function() {
+    inp.select(); inp.setSelectionRange(0,99999);
+    var okEl = document.getElementById('_cok');
+    var done = function(){ if(okEl) okEl.textContent='✅ Скопировано!'; };
+    var fail = function(){ try{document.execCommand('copy');done();}catch(e){if(okEl)okEl.textContent='☝️ Скопируй вручную';} };
+    if (navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(fail); else fail();
+  };
+  row.appendChild(inp); row.appendChild(cpBtn);
+  box.appendChild(row);
+  box.appendChild(mkEl('div','copy-ok')); document.getElementById && (box.lastChild.id='_cok');
 
-  box.appendChild(row);box.appendChild(ok);box.appendChild(cl);
-  ov.appendChild(box);document.body.appendChild(ov);
-  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  var cl = mkEl('button','btn-close','Закрыть'); cl.onclick = function(){ov.remove();};
+  box.appendChild(cl);
+  ov.appendChild(box); document.body.appendChild(ov);
+  ov.addEventListener('click', function(e){if(e.target===ov)ov.remove();});
 }
 
-function doCopy(){
-  var inp=document.getElementById('_url'),ok=document.getElementById('_cok');
-  if(!inp)return;
-  inp.select();inp.setSelectionRange(0,99999);
-  var done=function(){if(ok)ok.textContent='✅ Ссылка скопирована!';};
-  var fail=function(){try{document.execCommand('copy');done();}catch(e){if(ok)ok.textContent='☝️ Скопируй вручную';}};
-  if(navigator.clipboard)navigator.clipboard.writeText(inp.value).then(done).catch(fail);else fail();
+/* ============================================================
+   УТИЛИТЫ
+============================================================ */
+function resetCard() {
+  G = {name:'Мамочка', text:'', sig:'— Сына', photos:[]};
+  renderThumbs();
+  showScreen('builder-screen');
+  try { history.replaceState({}, '', location.pathname); } catch(e) {}
 }
 
-function reset(){
-  G={name:'Мамочка',text:'',sig:'— Сына',photos:[]};
-  go('builder-screen');
-  try{window.history.replaceState({},'',window.location.pathname);}catch(e){}
-}
-
-function go(id){
-  document.querySelectorAll('.screen').forEach(function(s){s.classList.remove('active');});
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
-  window.scrollTo(0,0);
-}
-function toast_(msg){
-  var t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');
-  setTimeout(function(){t.classList.remove('on');},2800);
+  // Сердечки показываем только во время игры
+  document.getElementById('hearts-layer').style.display = (id === 'game-screen') ? '' : 'none';
+  scrollTo(0, 0);
 }
 
-// Init
-window.addEventListener('DOMContentLoaded',function(){
-  var data = load();
-  if(data){
-    G = {name:data.name||'Мамочка', text:data.text||'', sig:data.sig||'', photos:data.photos||[]};
+function toast(msg) {
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  setTimeout(function(){t.classList.remove('on');}, 2800);
+}
+
+/* ============================================================
+   ИНИЦИАЛИЗАЦИЯ
+============================================================ */
+window.addEventListener('DOMContentLoaded', function() {
+  // Сердечки скрыты по умолчанию
+  document.getElementById('hearts-layer').style.display = 'none';
+
+  var data = loadData();
+  if (data) {
+    G = { name: data.name, text: data.text, sig: data.sig, photos: data.photos };
     startGame();
-    return;
+  } else {
+    showScreen('builder-screen');
   }
-  go('builder-screen');
 });
 </script>
 
